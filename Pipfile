@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+coverage = "*"
+
+[packages]
+sqlalchemy = "*"
+psycopg2-binary = "*"
+jinja2 = "*"
+pyyaml = "*"
+click = "*"
+
+[requires]
+python_version = "3.7"
