@@ -32,7 +32,7 @@ class Project:
         )
         self.macros_path = macros_path
 
-    def configure(self) -> dict:
+    def configure(self, group: str = None) -> dict:
         # Setting up the jinja environment
         queries_path = (Path(self.project_path) / 'queries').resolve()
         search_path = [str(queries_path)]
@@ -42,8 +42,15 @@ class Project:
             searchpath=search_path
         ))
 
-        # Now rendering the queries.
+        # Defining the queries order. The 'order' attribute
+        # in config can be an array if no group, or a dict
+        # where each attribute is a group name with an array
+        # as a value (the group order).
         query_order = self.project_config["order"]
+        if group is not None:
+            query_order = query_order[group]
+
+        # Now rendering the queries.
         queries = dict()
         for query in query_order:
             template = jinja_env.get_template(query)
@@ -54,10 +61,6 @@ class Project:
             "queries": queries,
             "context": self.context
         }
-
-    def get_project_config(self) -> dict:
-        config_path = (self.project_path / 'config.yaml').resolve()
-        return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
 
     def configure_integrity(self) -> dict:
         # Setting up the jinja environment
@@ -80,6 +83,10 @@ class Project:
             "queries": queries,
             "context": self.context
         }
+
+    def get_project_config(self) -> dict:
+        config_path = (self.project_path / 'config.yaml').resolve()
+        return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
 
 
 def configure_variables(project_config: dict, submitted_variables: dict,

@@ -53,6 +53,7 @@ class TestOverwritingVariables:
     def test_query_rendering(self):
         assert self.configuration["queries"]["query_one.sql"] == "barbar"
         assert self.configuration["queries"]["query_two.sql"] == "foofoobar"
+        assert self.configuration["queries"]["folder1/query_three.sql"] == "barbar"
 
     def test_query_order(self):
         assert self.configuration["order"] == [
@@ -67,7 +68,43 @@ class TestOverwritingVariables:
         assert context["env"]["foo"] == "foofoobar"
 
 
+class TestProjectOrderGroup:
 
+    project = Project(
+        project_path='fixtures/projects/project2',
+        connection_url='something://database',
+        connection_name='db',
+        env_name='dev',
+        variables={'foo': 'barbar'},
+        env_variables={'foo': 'foofoobar'}
+    )
 
+    configuration_main = project.configure(group='main')
+    configuration_other = project.configure(group='other')
 
+    def test_query_order_main(self):
+        assert self.configuration_main["order"] == ["query_one.sql"]
 
+    def test_query_rendering_main(self):
+        assert self.configuration_main["queries"]["query_one.sql"] == "barbar"
+
+    def test_configuration_context_main(self):
+        context = self.configuration_main["context"]
+        assert context["vars"]["foo"] == "barbar"
+        assert context["env"]["foo"] == "foofoobar"
+
+    def test_query_order_other(self):
+        assert self.configuration_other["order"] == [
+            "query_two.sql",
+            "folder1/query_three.sql"
+        ]
+
+    def test_query_rendering_other(self):
+        assert self.configuration_other["queries"].get("query_one.sql") is None
+        assert self.configuration_other["queries"]["query_two.sql"] == "foofoobar"
+        assert self.configuration_other["queries"]["folder1/query_three.sql"] == "barbar"
+
+    def test_configuration_context_other(self):
+        context = self.configuration_main["context"]
+        assert context["vars"]["foo"] == "barbar"
+        assert context["env"]["foo"] == "foofoobar"

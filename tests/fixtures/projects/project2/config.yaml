@@ -1,0 +1,16 @@
+order:
+  main:
+    - query_one.sql
+  other:
+    - query_two.sql
+    - folder1/query_three.sql
+
+variables:
+  db:
+    foo: bar
+  db_name:
+    foo: barbar
+
+env_variables:
+  dev:
+    foo: foobar

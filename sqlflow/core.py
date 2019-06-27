@@ -32,11 +32,16 @@ class SQLFlow:
         :return: Project instance
         """
 
-        project_path = (self.projects_path / project_name).resolve()
         if not self.connection_exists(connection_name):
-            raise ConnectionNotFound(f'Connection "{connection_name}" not found.')
+            raise ConnectionNotFound(
+                f'Connection "{connection_name}" not found.'
+            )
+
+        project_path = (self.projects_path / project_name).resolve()
         if not project_path.exists() or not project_path.is_dir():
-            raise ProjectNotFound(f'Project "{project_name}" does not exist.')
+            raise ProjectNotFound(
+                f'Project "{project_name}" does not exist.'
+            )
 
         return Project(
             project_path=str(project_path),
@@ -48,7 +53,7 @@ class SQLFlow:
             macros_path=self.macro_path
         )
 
-    def connection_exists(self, connection_name):
+    def connection_exists(self, connection_name) -> bool:
         if connection_name in self.connections:
             return True
         if os.environ.get(connection_name) is not None:
