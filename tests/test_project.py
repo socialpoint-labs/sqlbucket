@@ -1,5 +1,7 @@
 from sqlflow.project import Project
+from sqlflow.exceptions import GroupNotFound, OrderNotInRightFormat
 from pathlib import Path
+import pytest
 
 
 class TestProjectInstance:
@@ -108,3 +110,26 @@ class TestProjectOrderGroup:
         context = self.configuration_main["context"]
         assert context["vars"]["foo"] == "barbar"
         assert context["env"]["foo"] == "foofoobar"
+
+
+class TestProjectOrderExceptions:
+
+    def test_group_not_found(self):
+        project = Project(
+            project_path='fixtures/projects/project2',
+            connection_url='something://database',
+            connection_name='db',
+            env_name='dev',
+        )
+        with pytest.raises(GroupNotFound):
+            project.configure(group='fake')
+
+    def test_wrong_order_format(self):
+        project = Project(
+            project_path='fixtures/projects/project1',
+            connection_url='something://database',
+            connection_name='db',
+            env_name='dev',
+        )
+        with pytest.raises(OrderNotInRightFormat):
+            project.configure(group='main')

@@ -1,3 +1,4 @@
+from sqlflow.exceptions import GroupNotFound, OrderNotInRightFormat
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 import yaml
@@ -48,6 +49,14 @@ class Project:
         # as a value (the group order).
         query_order = self.project_config["order"]
         if group is not None:
+            if type(query_order) != dict:
+                raise OrderNotInRightFormat(
+                    f'Current config not in the right format for group orders'
+                )
+            if group not in query_order:
+                raise GroupNotFound(
+                    f'Group {group} not found in order config.'
+                )
             query_order = query_order[group]
 
         # Now rendering the queries.

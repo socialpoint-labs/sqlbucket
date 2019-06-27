@@ -4,3 +4,11 @@ class ProjectNotFound(Exception):
 
 class ConnectionNotFound(Exception):
     pass
+
+
+class GroupNotFound(KeyError):
+    pass
+
+
+class OrderNotInRightFormat(TypeError):
+    pass
