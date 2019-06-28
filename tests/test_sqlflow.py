@@ -58,7 +58,7 @@ class TestProjectLoading:
 
 class TestConnections:
     connections_path = (fixtures_path / 'connections.yaml').resolve()
-    connections = yaml.load(open(connections_path))
+    connections = yaml.load(open(connections_path), Loader=yaml.FullLoader)
     sqlflow = SQLFlow(
         projects_folder='projects',
         macro_folder='macros',

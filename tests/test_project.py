@@ -39,6 +39,9 @@ class TestProjectInstance:
         assert context["vars"]["foo"] == "bar"
         assert context["env"]["foo"] == "foobar"
 
+    def test_configuration_project_name(self):
+        assert self.configuration["project_name"] == "project1"
+
 
 class TestOverwritingVariables:
 
