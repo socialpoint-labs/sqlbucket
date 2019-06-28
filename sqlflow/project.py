@@ -55,7 +55,7 @@ class Project:
                 )
             if group not in query_order:
                 raise GroupNotFound(
-                    f'Group {group} not found in order config.'
+                    f'Group "{group}" not found in order config.'
                 )
             query_order = query_order[group]
 
@@ -68,7 +68,10 @@ class Project:
         return {
             "order": query_order,
             "queries": queries,
-            "context": self.context
+            "context": self.context,
+            "connection_url": self.connection_url,
+            "connection_name": self.connection_name,
+            "project_name": str(self.project_path).split('/')[-1]
         }
 
     def configure_integrity(self) -> dict:
@@ -90,7 +93,10 @@ class Project:
         return {
             "order": order,
             "queries": queries,
-            "context": self.context
+            "context": self.context,
+            "connection_url": self.connection_url,
+            "connection_name": self.connection_name,
+            "project_name": str(self.project_path).split('/')[-1]
         }
 
     def get_project_config(self) -> dict:
