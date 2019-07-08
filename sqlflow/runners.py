@@ -44,14 +44,20 @@ class ProjectRunner:
 
             # we run the query and monitor the time it takes
             query_start = datetime.now()
-            connection.execute(self.configuration["queries"][query])
+            rendered_query = self.configuration["queries"][query]
+            logger.info(f"Now running '{query}'...")
+
+            connection.execute(rendered_query)
+
             query_end = datetime.now()
-            self.log_query_summary(query_start, query_end)
+            timing = str(query_end - query_start)
+            logger.info(f"Query '{query}' successfully executed in {timing}.")
 
         end = datetime.now()
         self.ending_logs(start, end)
 
     def starting_logs(self):
+        logger.info("---------------------------------------")
         logger.info("               _  __ _                 ")
         logger.info("              | |/ _| |                ")
         logger.info("     ___  __ _| | |_| | _____      __  ")
@@ -60,25 +66,30 @@ class ProjectRunner:
         logger.info("    |___/\__, |_|_| |_|\___/ \_/\_/    ")
         logger.info("            | |                        ")
         logger.info("            |_|                        ")
-
-        logger.info('\n\n\n')
+        logger.info("---------------------------------------")
+        logger.info('')
+        logger.info('')
         logger.info(
             f"Starting project \"{self.configuration['project_name'].upper()}\""
             f" for connection \"{self.configuration['connection_name'].upper()}\""
             f"\n\n"
         )
         logger.info(f"Variables: {self.configuration['context']}")
-        logger.info(f"Running the following queries: \n")
+
+        queries = list()
         for i, query in enumerate(self.configuration["order"]):
             if i < self.from_step_index or i > self.to_step_index:
                 continue
-            logger.info(f"    - {query}")
+            queries.append(query)
 
-    def log_query_summary(self, query_start, query_end, verbose: bool = False):
-        pass
+        logger.info("\n\n\nRunning the following queries:"
+                    "\n\t" + "\n\t".join(queries))
 
     def ending_logs(self, start, end):
-        pass
+        logger.info(f"Project '{self.configuration['project_name']}' "
+                    f"successfully completed for database "
+                    f"'{self.configuration['connection_name']}'")
+        logger.info(f"Project completed in {end - start}")
 
 
 def create_connection(connection_url: str) -> Connection:
@@ -89,3 +100,14 @@ def create_connection(connection_url: str) -> Connection:
     )
     connection = engine.connect()
     return connection
+
+
+if __name__ == '__main__':
+    project_config = {
+        "order": ["1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql"],
+        "project_name": "Super project",
+        "connection_name": "wl",
+        "context": {"vars": {"something": 1}, "envs": {"whatever": 2}}
+    }
+    runner = ProjectRunner(configuration=project_config)
+    runner.starting_logs()
