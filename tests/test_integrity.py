@@ -1,4 +1,5 @@
 from sqlflow import SQLFlow
+from sqlflow.integrity import IntegrityCheck
 
 
 class TestIntegrityRendering:
@@ -27,4 +28,24 @@ class TestIntegrityRendering:
             "folder1/integrity2.sql",
             "integrity1.sql"
         ]
+
+
+class TestIntegrityCheck:
+
+    integrity = IntegrityCheck(
+        rows=[{"passed": True, "field": "value"}],
+        query_name='whatever.sql'
+    )
+
+    def test_has_passed_true(self):
+        rows = [{"passed": True}]
+        integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
+        assert integrity.has_passed() is True
+        assert integrity.log_summary() == 'success'
+
+    def test_has_passed_false(self):
+        rows = [{"passed": False}]
+        integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
+        assert integrity.has_passed() is False
+        assert integrity.log_summary() == 'FAILED'
 

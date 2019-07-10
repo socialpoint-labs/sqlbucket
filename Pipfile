@@ -13,6 +13,7 @@ psycopg2-binary = "*"
 jinja2 = "*"
 pyyaml = "*"
 click = "*"
+tabulate = "*"
 
 [requires]
 python_version = "3.7"

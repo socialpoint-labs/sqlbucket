@@ -57,22 +57,20 @@ class ProjectRunner:
         self.ending_logs(start, end)
 
     def starting_logs(self):
-        logger.info("---------------------------------------")
-        logger.info("               _  __ _                 ")
-        logger.info("              | |/ _| |                ")
-        logger.info("     ___  __ _| | |_| | _____      __  ")
-        logger.info("    / __|/ _` | |  _| |/ _ \ \ /\ / /  ")
-        logger.info("    \__ \ (_| | | | | | (_) \ V  V /   ")
-        logger.info("    |___/\__, |_|_| |_|\___/ \_/\_/    ")
-        logger.info("            | |                        ")
-        logger.info("            |_|                        ")
-        logger.info("---------------------------------------")
-        logger.info('')
-        logger.info('')
+        sqlflow = """
+                       _  __ _                 
+                      | |/ _| |                
+             ___  __ _| | |_| | _____      __  
+            / __|/ _` | |  _| |/ _ \ \ /\ / /  
+            \__ \ (_| | | | | | (_) \ V  V /   
+            |___/\__, |_|_| |_|\___/ \_/\_/    
+                    | |                        
+                    |_|                                  
+        """
+        logger.info(sqlflow)
         logger.info(
-            f"Starting project \"{self.configuration['project_name'].upper()}\""
-            f" for connection \"{self.configuration['connection_name'].upper()}\""
-            f"\n\n"
+            f"Starting project {self.configuration['project_name'].upper()}"
+            f" for connection {self.configuration['connection_name'].upper()}"
         )
         logger.info(f"Variables: {self.configuration['context']}")
 
@@ -82,7 +80,7 @@ class ProjectRunner:
                 continue
             queries.append(query)
 
-        logger.info("\n\n\nRunning the following queries:"
+        logger.info("\n\nRunning the following queries:"
                     "\n\t" + "\n\t".join(queries))
 
     def ending_logs(self, start, end):
@@ -100,14 +98,3 @@ def create_connection(connection_url: str) -> Connection:
     )
     connection = engine.connect()
     return connection
-
-
-if __name__ == '__main__':
-    project_config = {
-        "order": ["1.sql", "2.sql", "3.sql", "4.sql", "5.sql", "6.sql"],
-        "project_name": "Super project",
-        "connection_name": "wl",
-        "context": {"vars": {"something": 1}, "envs": {"whatever": 2}}
-    }
-    runner = ProjectRunner(configuration=project_config)
-    runner.starting_logs()
