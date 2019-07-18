@@ -15,4 +15,10 @@ def load_cli(sqlflow_object):
         click.echo(f'Hello {name}')
         click.echo(sqlflow.env_name)
 
+    @cli.command()
+    @click.option('--name', '-n')
+    @click.pass_obj
+    def create_project(sqlflow, project_name):
+        pass
+
     return cli

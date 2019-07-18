@@ -2,6 +2,7 @@ from sqlflow.project import Project
 from sqlflow.exceptions import ProjectNotFound, ConnectionNotFound
 from sqlflow.cli import load_cli
 from pathlib import Path
+from distutils.dir_util import copy_tree
 import os
 
 
@@ -52,6 +53,14 @@ class SQLFlow:
             env_variables=self.env_variables,
             macros_path=self.macro_path
         )
+
+    def create_project(self, project_name):
+        if project_name in os.listdir(self.projects_path):
+            raise Exception('Project name already used. Find another name')
+
+        sql_template_folder = (Path('../sqlflow') / 'template').resolve()
+        new_project_folder = (self.projects_path / project_name).resolve()
+        copy_tree(str(sql_template_folder), str(new_project_folder))
 
     def connection_exists(self, connection_name) -> bool:
         if connection_name in self.connections:
