@@ -1,5 +1,5 @@
-from sqlflow import SQLFlow, Project
-from sqlflow.exceptions import ProjectNotFound, ConnectionNotFound
+from sqlbucket import SQLBucket, Project
+from sqlbucket.exceptions import ProjectNotFound, ConnectionNotFound
 from pathlib import Path
 import pytest
 import yaml
@@ -11,20 +11,20 @@ fixtures_path = Path('fixtures')
 
 class TestSQLFlow:
 
-    sqlflow = SQLFlow(projects_folder='projects', macro_folder='macros')
+    sqlbucket = SQLBucket(projects_folder='projects', macro_folder='macros')
 
     def test_project_folder_exist(self):
-        assert self.sqlflow.projects_path is not None
-        assert isinstance(self.sqlflow.projects_path, Path)
+        assert self.sqlbucket.projects_path is not None
+        assert isinstance(self.sqlbucket.projects_path, Path)
 
     def test_macro_folder_exist(self):
-        assert self.sqlflow.macro_path is not None
-        assert isinstance(self.sqlflow.macro_path, Path)
+        assert self.sqlbucket.macro_path is not None
+        assert isinstance(self.sqlbucket.macro_path, Path)
 
 
 class TestProjectLoading:
 
-    sqlflow = SQLFlow(
+    sqlflow = SQLBucket(
         projects_folder='fixtures/projects',
         connections={'db_name': 'db_url'},
         env_name='dev'

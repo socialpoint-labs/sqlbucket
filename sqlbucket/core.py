@@ -1,23 +1,24 @@
-from sqlflow.project import Project
-from sqlflow.exceptions import ProjectNotFound, ConnectionNotFound
-from sqlflow.cli import load_cli
+from sqlbucket.project import Project
+from sqlbucket.exceptions import ProjectNotFound, ConnectionNotFound
+from sqlbucket.cli import load_cli
 from pathlib import Path
 from distutils.dir_util import copy_tree
 import os
 
 
-class SQLFlow:
+class SQLBucket:
 
     def __init__(
         self,
         projects_folder: str = 'projects',
-        macro_folder: str = None,
         connections: dict = None,
         env_name: str = None,
-        env_variables: dict = None
+        env_variables: dict = None,
+        macro_folder: str = None
     ):
 
-        self.projects_path = Path(projects_folder)
+        self.projects_path = Path.cwd() / Path(projects_folder)
+
         self.macro_path = Path(macro_folder) if macro_folder is not None else None
         self.connections = connections
         self.env_name = env_name
@@ -58,7 +59,7 @@ class SQLFlow:
         if project_name in os.listdir(self.projects_path):
             raise Exception('Project name already used. Find another name')
 
-        sql_template_folder = (Path('../sqlflow') / 'template').resolve()
+        sql_template_folder = Path(__file__).parent.joinpath('template')
         new_project_folder = (self.projects_path / project_name).resolve()
         copy_tree(str(sql_template_folder), str(new_project_folder))
 

@@ -1,4 +1,6 @@
-from sqlflow.exceptions import GroupNotFound, OrderNotInRightFormat
+from sqlbucket.exceptions import GroupNotFound, OrderNotInRightFormat
+from sqlbucket.runners import ProjectRunner
+from sqlbucket.integrity import run_integrity
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 import yaml
@@ -99,6 +101,22 @@ class Project:
             "project_name": str(self.project_path).split('/')[-1]
         }
 
+    def run(self, group: str, from_step: int = 1, to_step: int = None) -> None:
+        configuration = self.configure(group)
+        runner = ProjectRunner(
+            configuration=configuration,
+            from_step=from_step,
+            to_step=to_step
+        )
+        runner.run_project()
+
+    def run_integrity(self, prefix: str = ''):
+        integrity_configuration = self.configure_integrity()
+        return run_integrity(
+            configuration=integrity_configuration,
+            prefix=prefix
+        )
+
     def get_project_config(self) -> dict:
         config_path = (self.project_path / 'config.yaml').resolve()
         return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
@@ -113,9 +131,7 @@ def configure_variables(project_config: dict, submitted_variables: dict,
         variables_from_config = project_config.get('variables')
         env_variables_from_config = project_config.get('env_variables')
 
-        # quick parsing to be sure variables
-        # submitted overwrite the ones from
-        # project config.
+        # submitted variables overwrite the ones from project config.
         variables = dict()
         if variables_from_config:
             variables = variables_from_config[connection_name]
@@ -124,7 +140,6 @@ def configure_variables(project_config: dict, submitted_variables: dict,
                 variables[k] = v
 
         # Ditto for environment vars.
-        # Submitted ones overwrite config ones.
         env_variables = dict()
         if env_variables_from_config:
             env_variables = env_variables_from_config[env_name]

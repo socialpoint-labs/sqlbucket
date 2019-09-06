@@ -1,0 +1,4 @@
+include template/integrity/
+include template/queries/query_one.sql
+include template/queries/query_two.sql
+include template/config.py

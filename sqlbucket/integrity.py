@@ -1,6 +1,6 @@
-from sqlflow.runners import create_connection
+from sqlbucket.runners import create_connection
+from sqlbucket.runners import logger
 from tabulate import tabulate
-from sqlflow.runners import logger
 
 
 def run_integrity(configuration: dict, prefix: str = ''):

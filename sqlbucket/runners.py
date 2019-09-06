@@ -1,18 +1,9 @@
-import logging
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from sqlalchemy.pool import NullPool
+from sqlbucket.utils import logger
 import datetime
-import sys
-
-
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.DEBUG,
-    format='%(asctime)s [%(levelname)s] : %(message)s'
-)
-logger = logging.getLogger()
 
 
 class ProjectRunner:
