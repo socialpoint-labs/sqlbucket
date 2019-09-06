@@ -29,11 +29,12 @@ setup(
     url='https://github.com/socialpoint-labs/sqlbucket',
     keywords=['sql', 'etl', 'data-integrity'],
     install_requires=[
-        'Click>=7.0',
-        'jinja2>=2.10',
-        'PyYAML>=5.1',
-        'SQLAlchemy>=1.3',
-        'tabulate>=0.8'
+        'click>=6.0',
+        'jinja2==2.10.1',
+        'markupsafe==1.1.1',
+        'pyyaml>=5.0',
+        'sqlalchemy~=1.3',
+        'tabulate>=0.7.5'
     ],
     extras_require={
         'dev': [
