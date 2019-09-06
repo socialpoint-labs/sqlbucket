@@ -1,4 +1,8 @@
 /.idea
 *.pyc
 scratch.py
-
+*/.pytest_cache
+.coverage
+/build
+/dist
+/sqlbucket.egg-info

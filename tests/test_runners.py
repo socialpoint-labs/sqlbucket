@@ -1,4 +1,4 @@
-from sqlflow.runners import ProjectRunner
+from sqlbucket.runners import ProjectRunner
 import pytest
 
 

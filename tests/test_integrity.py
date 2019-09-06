@@ -1,15 +1,17 @@
-from sqlflow import SQLFlow
-from sqlflow.integrity import IntegrityCheck
+from sqlbucket import SQLBucket
+from sqlbucket.integrity import IntegrityCheck
+from pathlib import Path
 
 
 class TestIntegrityRendering:
 
-    sqlflow = SQLFlow(
-        projects_folder='fixtures/projects',
+    path = str((Path(__file__).parent / Path('fixtures/projects')).resolve())
+    sqlbucket = SQLBucket(
+        projects_folder=path,
         connections={'db_name': 'db_url'},
         env_name='dev'
     )
-    project = sqlflow.load_project(
+    project = sqlbucket.load_project(
         project_name='project1', connection_name='db_name'
     )
     integrity = project.configure_integrity()

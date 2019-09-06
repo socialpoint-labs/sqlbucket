@@ -1,13 +1,15 @@
-from sqlflow.project import Project
-from sqlflow.exceptions import GroupNotFound, OrderNotInRightFormat
+from sqlbucket.project import Project
+from sqlbucket.exceptions import GroupNotFound, OrderNotInRightFormat
 from pathlib import Path
 import pytest
 
 
 class TestProjectInstance:
 
+    path = str((Path(__file__).parent / Path('fixtures/projects/project1')))
+
     project = Project(
-        project_path='fixtures/projects/project1',
+        project_path=path,
         connection_url='something://database',
         connection_name='db',
         env_name='dev'
@@ -15,7 +17,8 @@ class TestProjectInstance:
     configuration = project.configure()
 
     def test_instance_attributes(self):
-        assert self.project.project_path == Path('fixtures/projects/project1')
+        assert self.project.project_path == \
+               Path(__file__).parent / Path('fixtures/projects/project1')
         assert self.project.connection_url == 'something://database'
         assert self.project.connection_name == 'db'
 
@@ -45,8 +48,10 @@ class TestProjectInstance:
 
 class TestOverwritingVariables:
 
+    path = str((Path(__file__).parent / Path('fixtures/projects/project1')))
+
     project = Project(
-        project_path='fixtures/projects/project1',
+        project_path=path,
         connection_url='something://database',
         connection_name='db',
         env_name='dev',
@@ -75,8 +80,10 @@ class TestOverwritingVariables:
 
 class TestProjectOrderGroup:
 
+    path = str((Path(__file__).parent / Path('fixtures/projects/project2')))
+
     project = Project(
-        project_path='fixtures/projects/project2',
+        project_path=path,
         connection_url='something://database',
         connection_name='db',
         env_name='dev',
@@ -118,8 +125,10 @@ class TestProjectOrderGroup:
 class TestProjectOrderExceptions:
 
     def test_group_not_found(self):
+        path = str(
+            (Path(__file__).parent / Path('fixtures/projects/project2')))
         project = Project(
-            project_path='fixtures/projects/project2',
+            project_path=path,
             connection_url='something://database',
             connection_name='db',
             env_name='dev',
@@ -128,8 +137,10 @@ class TestProjectOrderExceptions:
             project.configure(group='fake')
 
     def test_wrong_order_format(self):
+        path = str(
+            (Path(__file__).parent / Path('fixtures/projects/project1')))
         project = Project(
-            project_path='fixtures/projects/project1',
+            project_path=path,
             connection_url='something://database',
             connection_name='db',
             env_name='dev',
