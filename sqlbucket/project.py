@@ -101,7 +101,8 @@ class Project:
             "project_name": str(self.project_path).split('/')[-1]
         }
 
-    def run(self, group: str, from_step: int = 1, to_step: int = None) -> None:
+    def run(self, group: str = None, from_step: int = 1,
+            to_step: int = None) -> None:
         configuration = self.configure(group)
         runner = ProjectRunner(
             configuration=configuration,
@@ -122,8 +123,10 @@ class Project:
         return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
 
 
-def configure_variables(project_config: dict, submitted_variables: dict,
-                        submitted_env_variables: dict, connection_name: str,
+def configure_variables(project_config: dict,
+                        submitted_variables: dict,
+                        submitted_env_variables: dict,
+                        connection_name: str,
                         env_name: str) -> dict:
 
         # The following 2 variables found
@@ -134,7 +137,7 @@ def configure_variables(project_config: dict, submitted_variables: dict,
         # submitted variables overwrite the ones from project config.
         variables = dict()
         if variables_from_config:
-            variables = variables_from_config[connection_name]
+            variables = variables_from_config.get(connection_name, dict())
         if submitted_variables:
             for k, v in submitted_variables.items():
                 variables[k] = v
@@ -142,7 +145,7 @@ def configure_variables(project_config: dict, submitted_variables: dict,
         # Ditto for environment vars.
         env_variables = dict()
         if env_variables_from_config:
-            env_variables = env_variables_from_config[env_name]
+            env_variables = env_variables_from_config.get(env_name, dict())
         if submitted_env_variables:
             for k, v in submitted_env_variables.items():
                 env_variables[k] = v
