@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from sqlalchemy.pool import NullPool
 from sqlbucket.utils import logger
-import datetime
 
 
 class ProjectRunner:
