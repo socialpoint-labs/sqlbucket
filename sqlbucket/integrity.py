@@ -1,10 +1,16 @@
 from sqlbucket.runners import create_connection
 from sqlbucket.runners import logger
 from tabulate import tabulate
+from sqlbucket.utils import integrity_logo
 
 
 def run_integrity(configuration: dict, prefix: str = ''):
     errors = 0
+    logger.info(integrity_logo)
+    logger.info(
+        f'Starting integrity checks for {configuration["project_name"]} '
+        f'with connection {configuration["connection_name"]}'
+    )
     connection = create_connection(configuration["connection_url"])
     for query_name in configuration["order"]:
 
@@ -19,8 +25,9 @@ def run_integrity(configuration: dict, prefix: str = ''):
         integrity.log_summary(query_name)
         if not integrity.has_passed():
             errors += 1
-            logger.info("Showing integrity rows: \n")
+            logger.info(f"Showing integrity report for {query_name.upper()}: \n")
             integrity.log_rows()
+            logger.info('\n\n')
 
     return errors
 
