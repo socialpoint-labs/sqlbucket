@@ -16,7 +16,7 @@ def run_integrity(configuration: dict, prefix: str = ''):
             rows=[dict(row) for row in connection.execute(query)],
             query_name=query_name
         )
-        integrity.log_summary()
+        integrity.log_summary(query_name)
         if not integrity.has_passed():
             errors += 1
             logger.info("Showing integrity rows: \n")
@@ -37,12 +37,12 @@ class IntegrityCheck:
                 return False
         return True
 
-    def log_summary(self) -> str:
+    def log_summary(self, query_name: str) -> str:
         succeeded = len([item for item in self.rows if item["passed"]])
         status = "success" if self.has_passed() else "FAILED"
         logger.info(
-            f'Resolving integrity checks, ({succeeded}/{len(self.rows)}) '
-            f'==> {status}. '
+            f'Integrity {status}, ({succeeded}/{len(self.rows)}) '
+            f'for {query_name}'
         )
         return status
 

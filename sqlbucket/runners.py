@@ -61,7 +61,7 @@ class ProjectRunner:
             queries.append(query)
 
         logger.info("\n\nRunning the following queries:"
-                    "\n\t" + "\n\t - ".join(queries) + '\n')
+                    "\n\t" + "\n\t".join(queries) + '\n')
 
     def ending_logs(self, start, end):
         logger.info(f"Project '{self.configuration['project_name']}' "
