@@ -8,6 +8,7 @@ SQLBucket
 SQLBucket was built to help write, orchestrate and validate SQL ETL.
 
 
+
 Installing
 ----------
 
@@ -17,6 +18,8 @@ Install and update using `pip`_:
 
     pip install -U sqlbucket
 
+SQLBucket works only for Python 3.6 and 3.7, and probably 3.8 although
+not tested yet.
 
 A Simple Example
 ----------------
