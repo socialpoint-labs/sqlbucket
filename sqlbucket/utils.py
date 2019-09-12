@@ -25,3 +25,17 @@ def cli_variables_parser(cli_variables: list = None) -> dict:
         key, value = var.split("=")
         variables[key] = value
     return variables
+
+
+sqlbucket_logo = """
+
+
+               _____ ____    __    ____             __        __ 
+              / ___// __ \  / /   / __ )__  _______/ /_____  / /_
+              \__ \/ / / / / /   / __  / / / / ___/ //_/ _ \/ __/
+             ___/ / /_/ / / /___/ /_/ / /_/ / /__/ ,< /  __/ /_  
+            /____/\___\_\/_____/_____/\__,_/\___/_/|_|\___/\__/  
+
+
+
+        """

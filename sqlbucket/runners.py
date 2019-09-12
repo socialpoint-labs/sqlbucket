@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from sqlalchemy.pool import NullPool
-from sqlbucket.utils import logger
+from sqlbucket.utils import logger, sqlbucket_logo
 
 
 class ProjectRunner:
@@ -47,17 +47,7 @@ class ProjectRunner:
         self.ending_logs(start, end)
 
     def starting_logs(self):
-        sqlflow = """
-                       _  __ _                 
-                      | |/ _| |                
-             ___  __ _| | |_| | _____      __  
-            / __|/ _` | |  _| |/ _ \ \ /\ / /  
-            \__ \ (_| | | | | | (_) \ V  V /   
-            |___/\__, |_|_| |_|\___/ \_/\_/    
-                    | |                        
-                    |_|                                  
-        """
-        logger.info(sqlflow)
+        logger.info(sqlbucket_logo)
         logger.info(
             f"Starting project {self.configuration['project_name'].upper()}"
             f" for connection {self.configuration['connection_name'].upper()}"
@@ -71,7 +61,7 @@ class ProjectRunner:
             queries.append(query)
 
         logger.info("\n\nRunning the following queries:"
-                    "\n\t" + "\n\t".join(queries))
+                    "\n\t" + "\n\t - ".join(queries) + '\n')
 
     def ending_logs(self, start, end):
         logger.info(f"Project '{self.configuration['project_name']}' "

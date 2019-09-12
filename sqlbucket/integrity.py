@@ -19,7 +19,7 @@ def run_integrity(configuration: dict, prefix: str = ''):
         integrity.log_summary()
         if not integrity.has_passed():
             errors += 1
-            logger.info("Showing integrity rows: ")
+            logger.info("Showing integrity rows: \n")
             integrity.log_rows()
 
     return errors
@@ -40,8 +40,10 @@ class IntegrityCheck:
     def log_summary(self) -> str:
         succeeded = len([item for item in self.rows if item["passed"]])
         status = "success" if self.has_passed() else "FAILED"
-        logger.info(f'Status: {status}. {succeeded}/{len(self.rows)} '
-                    f'successfully passed.')
+        logger.info(
+            f'Resolving integrity checks, ({succeeded}/{len(self.rows)}) '
+            f'==> {status}. '
+        )
         return status
 
     def log_rows(self) -> print:

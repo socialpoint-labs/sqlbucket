@@ -3,25 +3,25 @@ from sqlbucket.utils import logger, n_days_ago, cli_variables_parser
 from sqlbucket.runners import ProjectRunner
 
 
-def load_cli(sqlflow_object):
+def load_cli(sqlbucket_object):
 
     @click.group()
     @click.pass_context
     def cli(ctx):
-        ctx.obj = sqlflow_object
+        ctx.obj = sqlbucket_object
 
     @cli.command()
     @click.option('--name', '-n')
     @click.pass_obj
-    def hello(sqlflow, name):
+    def hello(sqlbucket, name):
         click.echo(f'Hello {name}')
-        click.echo(sqlflow.env_name)
+        click.echo(sqlbucket.env_name)
 
     @cli.command()
     @click.option('--name', '-n')
     @click.pass_obj
-    def create_project(sqlflow, name):
-        sqlflow.create_project(name)
+    def create_project(sqlbucket, name):
+        sqlbucket.create_project(name)
         logger.info(f'Project "{name}" successfully created!')
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
@@ -37,7 +37,7 @@ def load_cli(sqlflow_object):
     @click.option('--from_days', '-fd', required=False, default=None, type=str)
     @click.option('--to_days', '-td', required=False, default=None, type=str)
     @click.argument('args', nargs=-1)
-    def run_job(sqlflow, name, db, env, fstep, tstep, to_date, from_date,
+    def run_job(sqlbucket, name, db, env, fstep, tstep, to_date, from_date,
                 from_days, to_days, args):
 
         submitted_variables = cli_variables_parser(args)
@@ -54,7 +54,7 @@ def load_cli(sqlflow_object):
         logger.info('Variables used')
         logger.info(submitted_variables)
 
-        etl = sqlflow.load_project(
+        etl = sqlbucket.load_project(
             project=name,
             db=db,
             context=submitted_variables,
