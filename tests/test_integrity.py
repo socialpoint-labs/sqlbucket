@@ -43,11 +43,11 @@ class TestIntegrityCheck:
         rows = [{"passed": True}]
         integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
         assert integrity.has_passed() is True
-        assert integrity.log_summary() == 'success'
+        assert integrity.log_summary('whatever') == 'success'
 
     def test_has_passed_false(self):
         rows = [{"passed": False}]
         integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
         assert integrity.has_passed() is False
-        assert integrity.log_summary() == 'FAILED'
+        assert integrity.log_summary('whatever') == 'FAILED'
 

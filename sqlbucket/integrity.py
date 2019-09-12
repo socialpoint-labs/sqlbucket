@@ -27,7 +27,6 @@ def run_integrity(configuration: dict, prefix: str = ''):
             errors += 1
             logger.info(f"Showing integrity report for {query_name.upper()}: \n")
             integrity.log_rows()
-            logger.info('\n\n')
 
     return errors
 
@@ -61,6 +60,6 @@ class IntegrityCheck:
             for k in keys:
                 array_item.append(item[k])
             tabulator.append(array_item)
-        return print(tabulate(tabulator, headers="firstrow", tablefmt="pipe"))
+        print(tabulate(tabulator, headers="firstrow", tablefmt="pipe") + '\n')
 
 
