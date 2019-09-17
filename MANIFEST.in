@@ -1,0 +1,5 @@
+include sqlbucket/template/integrity/integrity_one.sql
+include sqlbucket/template/queries/query_one.sql
+include sqlbucket/template/queries/query_two.sql
+include sqlbucket/template/config.yaml
+include sqlbucket/macros/macros.j2

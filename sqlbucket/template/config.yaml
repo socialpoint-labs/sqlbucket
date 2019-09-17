@@ -1,0 +1,13 @@
+order:
+  - query_one.sql
+  - query_two.sql
+
+variables:
+  connection_name1:
+    foo: bar
+  connection_name2:
+    foo: barbar
+
+env_variables:
+  dev:
+    foo: foobar

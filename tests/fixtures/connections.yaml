@@ -1,0 +1,3 @@
+database_1: psycopg2://database
+database_2: postgresql://username:password@host.amazonaws.com:5439/database
+database_3: mysql://username:password@host.amazonaws.com:5439/database
