@@ -18,9 +18,8 @@ def load_cli(sqlbucket_object):
         logger.info(f'Project "{name}" successfully created!')
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
-    @click.option('--name', '-n', type=str)
-    @click.option('--db', '-b', type=str)
-    @click.option('--env', '-e', default=False)
+    @click.option('--name', '-n', required=True, type=str)
+    @click.option('--db', '-b', required=True, type=str)
     @click.option('--fstep', '-fs', required=False, default=1)
     @click.option('--tstep', '-ts', required=False, default=None, type=int)
     @click.option('--from_date', '-f', required=False, default=n_days_ago(4),
@@ -31,7 +30,7 @@ def load_cli(sqlbucket_object):
     @click.option('--to_days', '-td', required=False, default=None, type=str)
     @click.pass_obj
     @click.argument('args', nargs=-1)
-    def run_job(sqlbucket, name, db, env, fstep, tstep, to_date, from_date,
+    def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
                 from_days, to_days, args):
 
         submitted_variables = cli_variables_parser(args)
@@ -49,17 +48,31 @@ def load_cli(sqlbucket_object):
         logger.info(submitted_variables)
 
         etl = sqlbucket.load_project(
-            project=name,
-            db=db,
-            context=submitted_variables,
-            env=env
+            project_name=name,
+            connection_name=db,
+            variables=submitted_variables
         )
-        configuration = etl.build_etl_configuration()
-        runner = ProjectRunner(
-            configuration=configuration,
-            from_step=fstep,
-            to_step=tstep
+        etl.run(from_step=fstep, to_step=tstep)
+        etl.run_integrity()
+
+    @cli.command(context_settings=dict(ignore_unknown_options=True))
+    @click.option('--name', '-n', required=True, type=str)
+    @click.option('--db', '-b', required=True, type=str)
+    @click.option('--prefix', '-p', required=False, default='', type=str)
+    @click.pass_obj
+    @click.argument('args', nargs=-1)
+    def run_integrity(sqlbucket, name, db, prefix, args):
+
+        submitted_variables = cli_variables_parser(args)
+
+        logger.info('Variables used')
+        logger.info(submitted_variables)
+
+        etl = sqlbucket.load_project(
+            project_name=name,
+            connection_name=db,
+            variables=submitted_variables
         )
-        runner.run_project()
+        etl.run_integrity(prefix=prefix)
 
     return cli
