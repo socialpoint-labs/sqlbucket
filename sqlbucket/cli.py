@@ -13,13 +13,6 @@ def load_cli(sqlbucket_object):
     @cli.command()
     @click.option('--name', '-n')
     @click.pass_obj
-    def hello(sqlbucket, name):
-        click.echo(f'Hello {name}')
-        click.echo(sqlbucket.env_name)
-
-    @cli.command()
-    @click.option('--name', '-n')
-    @click.pass_obj
     def create_project(sqlbucket, name):
         sqlbucket.create_project(name)
         logger.info(f'Project "{name}" successfully created!')
@@ -36,6 +29,7 @@ def load_cli(sqlbucket_object):
                   type=str)
     @click.option('--from_days', '-fd', required=False, default=None, type=str)
     @click.option('--to_days', '-td', required=False, default=None, type=str)
+    @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, env, fstep, tstep, to_date, from_date,
                 from_days, to_days, args):
