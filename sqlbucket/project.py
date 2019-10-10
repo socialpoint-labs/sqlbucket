@@ -48,13 +48,17 @@ class Project:
         # Defining the queries order. The 'order' attribute
         # in config can be an array if no group, or a dict
         # where each attribute is a group name with an array
-        # as a value (the group order).
+        # as a value (the group order). If no group name is
+        # submitted.
         query_order = self.project_config["order"]
-        if group is not None:
-            if type(query_order) != dict:
+        if type(query_order) == list:
+            if group:
                 raise OrderNotInRightFormat(
                     f'Current config not in the right format for group orders'
                 )
+        elif type(query_order) == dict:
+            if not group:
+                group = 'main'
             if group not in query_order:
                 raise GroupNotFound(
                     f'Group "{group}" not found in order config.'
