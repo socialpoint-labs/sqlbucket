@@ -122,6 +122,33 @@ class TestProjectOrderGroup:
         assert context["env"]["foo"] == "foofoobar"
 
 
+class TestProjectGroupDefault:
+
+    path = str((Path(__file__).parent / Path('fixtures/projects/project2')))
+
+    project = Project(
+        project_path=path,
+        connection_url='something://database',
+        connection_name='db',
+        env_name='dev',
+        variables={'foo': 'barbar'},
+        env_variables={'foo': 'foofoobar'}
+    )
+
+    configuration_main = project.configure()
+
+    def test_query_order_main(self):
+        assert self.configuration_main["order"] == ["query_one.sql"]
+
+    def test_query_rendering_main(self):
+        assert self.configuration_main["queries"]["query_one.sql"] == "barbar"
+
+    def test_configuration_context_main(self):
+        context = self.configuration_main["context"]
+        assert context["vars"]["foo"] == "barbar"
+        assert context["env"]["foo"] == "foofoobar"
+
+
 class TestProjectOrderExceptions:
 
     def test_group_not_found(self):
