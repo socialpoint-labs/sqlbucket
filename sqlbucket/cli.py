@@ -1,6 +1,5 @@
 import click
 from sqlbucket.utils import logger, n_days_ago, cli_variables_parser
-from sqlbucket.runners import ProjectRunner
 
 
 def load_cli(sqlbucket_object):
