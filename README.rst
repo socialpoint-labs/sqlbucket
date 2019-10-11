@@ -15,9 +15,9 @@ Lightweight, it can work as a stand alone service, or be part of your workflow
 manager environment (Airflow, Luigi, ..).
 
 
-.. image:: documentation/images/terminal.gif
-    :width: 400px
-    :align: center
+.. raw:: html
+    <img src="documentation/images/terminal.gif" align="center">
+
 
 Installing
 ----------
