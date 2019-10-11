@@ -15,9 +15,6 @@ Lightweight, it can work as a stand alone service, or be part of your workflow
 manager environment (Airflow, Luigi, ..).
 
 
-.. image:: documentation/images/terminal.gif
-    :align: center
-
 Installing
 ----------
 
@@ -76,6 +73,8 @@ ETL.
 .. _documentation on integrity: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/integrity.rst
 
 
+This is how you would launch a project:
+
 .. code-block:: python
 
     from sqlbucket import SQLBucket
@@ -93,6 +92,18 @@ ETL.
 
     project.run()
     project.run_integrity()
+
+
+This would trigger logs as the below.
+
+.. image:: documentation/images/terminal.gif
+    :align: center
+
+
+You can also launch a project using the `sqlbucket command line interface`_.
+
+.. _sqlbucket command line interface: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/cli.rst
+
 
 
 Contributing
