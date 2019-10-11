@@ -18,7 +18,6 @@ manager environment (Airflow, Luigi, ..).
 .. image:: documentation/images/terminal.gif
     :width: 400px
     :align: center
-    :margin: 0px auto
 
 Installing
 ----------
