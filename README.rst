@@ -94,7 +94,7 @@ This is how you would launch a project:
     project.run_integrity()
 
 
-This would trigger logs as the below.
+This would trigger logs as below.
 
 .. image:: documentation/images/terminal.gif
     :align: center
