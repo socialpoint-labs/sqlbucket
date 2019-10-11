@@ -16,6 +16,7 @@ manager environment (Airflow, Luigi, ..).
 
 
 .. raw:: html
+
     <img src="documentation/images/terminal.gif" align="center">
 
 
