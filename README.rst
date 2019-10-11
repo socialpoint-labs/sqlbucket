@@ -16,8 +16,7 @@ manager environment (Airflow, Luigi, ..).
 
 
 .. image:: documentation/images/terminal.gif
-    :scale: 70 %
-    :align: right
+    :align: center
 
 Installing
 ----------
