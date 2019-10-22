@@ -3,7 +3,7 @@ Data quality and integrity with SQLBucket
 
 
 On top of writing ETL, SQLBucket helps you organize some integrity checks you
-may have on your ETL. The SQL for integrity checks has only one convention: it
+may need on your ETL. The SQL for integrity checks has only one convention: it
 must returns the result of your integrity as a boolean on the alias field
 **passed**. Everything is done in plain and simple SQL. You can have as many
 other fields as you want.
@@ -17,7 +17,7 @@ You will find below some examples on how they should be written.
 **No nulls in field**
 
 If we were to guarantee a field does not contain any nulls, the following query
-would do just that.
+would check just that.
 
 .. code-block:: sql
 
@@ -63,7 +63,7 @@ For the same check, the integrity query would look as follow:
         count(1) as calculated,
         count(1) = 0 as passed
     from my_table
-    where positive_field >= 0
+    where positive_field < 0
 
 
 **Only specific values**
@@ -75,7 +75,7 @@ For the same check, the integrity query would look as follow:
         count(1) as calculated,
         count(1) = 0 as passed
     from my_table
-    where positive_field in ('high', 'low')
+    where field not in ('high', 'low')
 
 
 **Values must be unique**
@@ -245,9 +245,9 @@ within a threshold.
     {% set sum_source = 'select sum(revenue) from source_table' %}
     {% set sum_target = 'select sum(revenue) from target_table' %}
 
-    {{ macros.are_within_threshold(sum_source, sum_target, 0.01)}
+    {{ macros.are_within_threshold(sum_source, sum_target, 0.01) }}
 
 
 This will generate an SQL query that will return True if the sum of the target
-table is within the threshold given.
+table is within the threshold given (in this case 1%).
 
