@@ -1,4 +1,4 @@
-{% macro are_float_scalars_matching(scalar_a, scalar_b, threshold) %}
+{% macro are_within_threshold(scalar_a, scalar_b, threshold) %}
 
     ({{ scalar_a }})    as source,
 
@@ -6,7 +6,7 @@
 
     {{ threshold }}     as threshold,
 
-    abs((({{ scalar_a }}) - ({{ scalar_b }})) / nullif(({{ scalar_b }}), 0)) * 100 <= {{ threshold }}
+    abs((({{ scalar_a }}) - ({{ scalar_b }})) / nullif(({{ scalar_b }}), 0)) <= {{ threshold }}
     or ( (nvl(({{ scalar_a }}), 0 )) = 0 and (nvl(({{ scalar_b }}), 0)) = 0 )
 
     as passed
