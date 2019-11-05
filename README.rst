@@ -48,8 +48,13 @@ structure as a root folder, where you can have as many projects as you want.
 
 Inside a project, it must contain a folder called `queries` that will contains
 your SQL files to be ran, and a config.yaml that will let you set the order in
-which those queries must be processed. This config file will also give you the
-possibility to set variables for your SQL.
+which those queries must be processed. SQLBucket leverages on the amazing
+Jinja2 templating library to give you the possibility to set variables in your
+SQL as well as giving you pure execution flows like for loops. To see in more
+depth what can be done, see the documentation on `how to write SQL in SQLBucket`_.
+
+.. _how to write SQL in SQLBucket: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/usage.rst
+
 
 In practice, this is how a project folder would look.
 
