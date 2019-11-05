@@ -17,7 +17,8 @@ class TestVariablesConfiguration:
             env_name=env_name
         )
 
-        assert variables == {'vars': dict(), 'env': dict()}
+        assert variables == {'vars': dict(), 'env': dict(),
+                             'connection_name': 'conn'}
 
     def test_connection_and_env_not_in_config(self):
         project_config = {
@@ -36,7 +37,9 @@ class TestVariablesConfiguration:
             env_name=env_name
         )
 
-        assert variables == {'vars': dict(), 'env': dict()}
+        assert variables == {'vars': dict(),
+                             'env': dict(),
+                             'connection_name': 'conn2'}
 
     def test_connection_and_env_not_in_config_with_submitted_vars(self):
         project_config = {
@@ -57,7 +60,8 @@ class TestVariablesConfiguration:
 
         assert variables == {
             'vars': {'submitted_foo': 'submitted_bar'},
-            'env': {'submitted_env_foo': 'submitted_env_bar'}
+            'env': {'submitted_env_foo': 'submitted_env_bar'},
+            'connection_name': 'conn2'
         }
 
     def test_connection_and_env_in_config(self):
@@ -79,7 +83,8 @@ class TestVariablesConfiguration:
 
         assert variables == {
             'vars': {'foo': 'bar'},
-            'env': {'foofoo': 'barbar'}
+            'env': {'foofoo': 'barbar'},
+            'connection_name': 'conn1'
         }
 
     def test_variables_overwrite(self):
@@ -101,7 +106,8 @@ class TestVariablesConfiguration:
 
         assert variables == {
             'vars': {'foo': 'barbar'},
-            'env': {'foofoo': 'bar'}
+            'env': {'foofoo': 'bar'},
+            'connection_name': 'conn1'
         }
 
     def test_only_submitted_variables(self):
@@ -120,6 +126,7 @@ class TestVariablesConfiguration:
 
         assert variables == {
             'vars': {'foo': 'bar'},
-            'env': {'foofoo': 'barbar'}
+            'env': {'foofoo': 'barbar'},
+            'connection_name': 'conn1'
         }
 
