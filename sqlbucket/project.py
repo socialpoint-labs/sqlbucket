@@ -154,5 +154,9 @@ def configure_variables(project_config: dict,
             for k, v in submitted_env_variables.items():
                 env_variables[k] = v
 
-        return {"vars": variables, "env": env_variables}
+        return {
+            "vars": variables,
+            "env": env_variables,
+            "connection_name": connection_name
+        }
 
