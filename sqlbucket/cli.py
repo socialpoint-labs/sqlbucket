@@ -52,7 +52,6 @@ def load_cli(sqlbucket_object):
             variables=submitted_variables
         )
         etl.run(from_step=fstep, to_step=tstep)
-        etl.run_integrity()
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--name', '-n', required=True, type=str)
