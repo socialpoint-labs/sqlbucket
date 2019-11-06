@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.pool import NullPool
 from sqlbucket.utils import logger, sqlbucket_logo
@@ -37,7 +37,7 @@ class ProjectRunner:
             rendered_query = self.configuration["queries"][query]
             logger.info(f"Now running '{query}'...")
 
-            connection.execute(rendered_query)
+            connection.execute(text(rendered_query))
 
             query_end = datetime.now()
             timing = str(query_end - query_start)

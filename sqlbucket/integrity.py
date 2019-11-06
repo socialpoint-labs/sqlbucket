@@ -2,6 +2,7 @@ from sqlbucket.runners import create_connection
 from sqlbucket.runners import logger
 from tabulate import tabulate
 from sqlbucket.utils import integrity_logo
+from sqlalchemy import text
 
 
 def run_integrity(configuration: dict, prefix: str = ''):
@@ -19,7 +20,7 @@ def run_integrity(configuration: dict, prefix: str = ''):
 
         query = configuration["queries"][query_name]
         integrity = IntegrityCheck(
-            rows=[dict(row) for row in connection.execute(query)],
+            rows=[dict(row) for row in connection.execute(text(query))],
             query_name=query_name
         )
         integrity.log_summary(query_name)
