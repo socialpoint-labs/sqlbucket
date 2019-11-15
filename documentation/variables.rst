@@ -195,3 +195,11 @@ connection variables.
 
 The command line interface for running a project gives you plenty of options to
 create date variables. You can refer to the CLI documentation.
+
+
+Setting variables with config.yaml
+----------------------------------
+
+The config.yaml gives you the possibility to set variables in a more static way,
+in case you need it. You can refer to the documentation about the project
+configuration.
