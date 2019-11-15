@@ -187,7 +187,7 @@ it can be anything based on your needs.
 
 You will then be able to access those variables as follows:
 
-.. code-block::sql
+.. code-block::jinja
 
     DELETE FROM my_table
     WHERE datetime >= '{{ from }}' AND datetime < '{{ to }}'
