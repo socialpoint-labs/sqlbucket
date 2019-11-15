@@ -175,7 +175,7 @@ it can be anything based on your needs.
 
     project_variables = {
         'from': yesterday.strftime('%Y-%m-%d'),
-        'to' today..strftime('%Y-%m-%d')
+        'to' today.strftime('%Y-%m-%d')
     }
     random_project = bucket.load_project(
         name='<some project>',
