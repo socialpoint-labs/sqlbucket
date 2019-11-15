@@ -100,9 +100,11 @@ Connection variables
 --------------------
 
 Connection variables are simply a set of variables you can add based on connection
-names used when running a project. When you load project for a given connection,
-the connection variables matching that connection name will be passed over as
-values you can render on the SQL queries. This is optional to use.
+names when running a project. When you a load project for a given connection,
+SQLBucket checks if some connection variables matches the connection name submitted
+and pass them over as values you can render on the SQL queries. 
+
+This is optional to use.
 
 
 .. code-block:: python
