@@ -19,6 +19,7 @@ def load_cli(sqlbucket_object):
     @cli.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--name', '-n', required=True, type=str)
     @click.option('--db', '-b', required=True, type=str)
+    @click.option('--group', '-g', required=False, type=str)
     @click.option('--fstep', '-fs', required=False, default=1)
     @click.option('--tstep', '-ts', required=False, default=None, type=int)
     @click.option('--from_date', '-f', required=False, default=n_days_ago(4),
@@ -27,10 +28,11 @@ def load_cli(sqlbucket_object):
                   type=str)
     @click.option('--from_days', '-fd', required=False, default=None, type=str)
     @click.option('--to_days', '-td', required=False, default=None, type=str)
+    @click.option('--group', '-g', required=False, type=str)
     @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
-                from_days, to_days, args):
+                from_days, to_days, group, args):
 
         submitted_variables = cli_variables_parser(args)
 
@@ -51,7 +53,7 @@ def load_cli(sqlbucket_object):
             connection_name=db,
             variables=submitted_variables
         )
-        etl.run(from_step=fstep, to_step=tstep)
+        etl.run(from_step=fstep, to_step=tstep, group=group)
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--name', '-n', required=True, type=str)
