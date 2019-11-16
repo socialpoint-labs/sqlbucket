@@ -12,27 +12,21 @@ class Project:
         self,
         project_path: str,
         connection_url: str,
-        connection_name: str,
-        env_name: str = None,
-        variables: dict = None,
-        env_variables: dict = None,
+        context: dict = None,
         macros_path: str = None
     ):
 
         self.project_path = Path(project_path)
-        self.env_name = env_name
-        self.connection_url = connection_url
-        self.connection_name = connection_name
         self.project_config = self.get_project_config()
 
-        # To generate the variables to submit to Jinja
-        self.context = configure_variables(
-            project_config=self.project_config,
-            submitted_variables=variables,
-            submitted_env_variables=env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
+        self.context = ContextMerger(
+            context=context, context_from_config=self.project_config
+        ).merge()
+
+        self.env_name = self.context['e']['name']
+        self.connection_url = connection_url
+        self.connection_name = self.context['c']['name']
+
         self.macros_path = macros_path
 
     def configure(self, group: str = None) -> dict:
@@ -127,36 +121,65 @@ class Project:
         return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
 
 
-def configure_variables(project_config: dict,
-                        submitted_variables: dict,
-                        submitted_env_variables: dict,
-                        connection_name: str,
-                        env_name: str) -> dict:
+class ContextMerger:
+    """
+    Class to help merging 2 variables contexts. Original context is the one
+    submitted when loading a project. It must be merged with the one found in
+    config.
 
-        # The following 2 variables found
-        # in config.yaml of the project.
-        variables_from_config = project_config.get('variables')
-        env_variables_from_config = project_config.get('env_variables')
+    In case of duplicate keys between the 2 context, we only keep one. The
+    context that has priority depends on the variable types.
 
-        # submitted variables overwrite the ones from project config.
-        variables = dict()
-        if variables_from_config:
-            variables = variables_from_config.get(connection_name, dict())
-        if submitted_variables:
-            for k, v in submitted_variables.items():
-                variables[k] = v
+    Environment and connection variables from the config.yaml of a project will
+    overwrite the key/value matching pairs of the one submitted by SQLBucket.
 
-        # Ditto for environment vars.
-        env_variables = dict()
-        if env_variables_from_config:
-            env_variables = env_variables_from_config.get(env_name, dict())
-        if submitted_env_variables:
-            for k, v in submitted_env_variables.items():
-                env_variables[k] = v
+    For project variables, this is opposite, we give priority to the ones submitted
+    by the SQLBucket, typically the one submitted in Python or via CLI. The
+    logic behind it is that we prefer to give priority to the more dynamic
+    approach.
 
-        return {
-            "vars": variables,
-            "env": env_variables,
-            "connection_name": connection_name
-        }
+    """
+    def __init__(self, context: dict, context_from_config: dict):
+        """
+        :param context: Context send to project by SQLBucket object.
+        :param context_from_config: Context found in config.yaml of a project.
+        """
+        self.context = context
+        self.context_from_config = context_from_config
 
+    def overwrite_environment_variables(self):
+        config_env_vars = self.context_from_config.get('environment_variables')
+        if not config_env_vars:
+            return
+
+        env_name = self.context['e']['name']
+        if env_name not in config_env_vars:
+            return
+
+        for key, value in config_env_vars[env_name].items():
+            self.context['e'][key] = value
+
+    def overwrite_connection_variables(self):
+        connections_vars = self.context_from_config.get('connection_variables')
+        if not connections_vars:
+            return
+
+        connection_name = self.context['c']['name']
+        if connection_name not in connections_vars:
+            return
+
+        for key, value in connections_vars[connection_name].items():
+            self.context['c'][key] = value
+
+    def overwrite_project_variables(self):
+        project_vars = self.context_from_config.get('project_variables')
+        if not project_vars:
+            return
+        for key, value in project_vars.items():
+            self.context[key] = value
+
+    def merge(self):
+        self.overwrite_environment_variables()
+        self.overwrite_connection_variables()
+        self.overwrite_project_variables()
+        return self.context
