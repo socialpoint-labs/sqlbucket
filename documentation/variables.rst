@@ -199,9 +199,26 @@ The command line interface for running a project gives you plenty of options to
 create date variables. You can refer to the CLI documentation.
 
 
-Setting variables with config.yaml
-----------------------------------
+Setting variables at project level with config.yaml
+---------------------------------------------------
 
-The config.yaml gives you the possibility to set variables in a more static way,
-in case you need it. You can refer to the documentation about the project
-configuration.
+You can also set those 3 types of variables in your project using the
+config.yaml configuration file.
+
+If those 3 types of variables are both set at SQLBucket and project level, they
+will be merged. For variables that are named the same in between the 2 sources,
+a variable value will be overwritten. As to which source overwrite the other, it
+actually depends on the variable type.ç
+
+For the global variables and connection variables, the variables set in the
+config.yaml will overwrite the ones with matching name configured when
+instantiating the SQLBucket object.
+
+The project variables set in the config.yaml will be overwritten by the ones
+submitted by load_project method or submitted by CLI.
+
+From a design perspective, we agree that this may be considered counter productive.
+
+Ultimately, what matters is how YOU prefer to assign variables, and SQLBucket gives
+you multiple alternative. If you use both methods, just be aware of what gets
+overwritten depending on the variable types.
