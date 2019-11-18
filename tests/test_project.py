@@ -11,8 +11,7 @@ class TestProjectInstance:
     project = Project(
         project_path=path,
         connection_url='something://database',
-        connection_name='db',
-        env_name='dev'
+        context={'c': {'name': 'db'}, 'e': {'name': 'dev'}}
     )
     configuration = project.configure()
 
@@ -39,8 +38,8 @@ class TestProjectInstance:
 
     def test_configuration_context(self):
         context = self.configuration["context"]
-        assert context["vars"]["foo"] == "bar"
-        assert context["env"]["foo"] == "foobar"
+        assert context["foo"] == "bar"
+        assert context["e"]["foo"] == "foobar"
 
     def test_configuration_project_name(self):
         assert self.configuration["project_name"] == "project1"
@@ -53,17 +52,18 @@ class TestOverwritingVariables:
     project = Project(
         project_path=path,
         connection_url='something://database',
-        connection_name='db',
-        env_name='dev',
-        variables={'foo': 'barbar'},
-        env_variables={'foo': 'foofoobar'}
+        context={
+            'foo': 'barbar',
+            'c': {'name': 'db'},
+            'e': {'name': 'dev', 'foo': 'foofoobar'}
+        }
     )
     configuration = project.configure()
 
     def test_query_rendering(self):
-        assert self.configuration["queries"]["query_one.sql"] == "barbar"
-        assert self.configuration["queries"]["query_two.sql"] == "foofoobar"
-        assert self.configuration["queries"]["folder1/query_three.sql"] == "barbar"
+        assert self.configuration["queries"]["query_one.sql"] == "bar"
+        assert self.configuration["queries"]["query_two.sql"] == "foobar"
+        assert self.configuration["queries"]["folder1/query_three.sql"] == "bar"
 
     def test_query_order(self):
         assert self.configuration["order"] == [
@@ -74,8 +74,9 @@ class TestOverwritingVariables:
 
     def test_configuration_context(self):
         context = self.configuration["context"]
-        assert context["vars"]["foo"] == "barbar"
-        assert context["env"]["foo"] == "foofoobar"
+        assert context["foo"] == "bar"
+        assert context["e"]["foo"] == "foobar"
+        assert context["e"]["name"] == "dev"
 
 
 class TestProjectOrderGroup:
@@ -85,10 +86,11 @@ class TestProjectOrderGroup:
     project = Project(
         project_path=path,
         connection_url='something://database',
-        connection_name='db',
-        env_name='dev',
-        variables={'foo': 'barbar'},
-        env_variables={'foo': 'foofoobar'}
+        context={
+            'c': {'name': 'db'},
+            'e': {'name': 'dev', 'foo': 'foofoobar'},
+            'foo': 'bar'
+        }
     )
 
     configuration_main = project.configure(group='main')
@@ -97,13 +99,13 @@ class TestProjectOrderGroup:
     def test_query_order_main(self):
         assert self.configuration_main["order"] == ["query_one.sql"]
 
-    def test_query_rendering_main(self):
+    def test_query_rendering_main_overwrite_by_config(self):
         assert self.configuration_main["queries"]["query_one.sql"] == "barbar"
 
     def test_configuration_context_main(self):
         context = self.configuration_main["context"]
-        assert context["vars"]["foo"] == "barbar"
-        assert context["env"]["foo"] == "foofoobar"
+        assert context["foo"] == "barbar"
+        assert context["e"]["foo"] == "foofoobar"
 
     def test_query_order_other(self):
         assert self.configuration_other["order"] == [
@@ -118,8 +120,8 @@ class TestProjectOrderGroup:
 
     def test_configuration_context_other(self):
         context = self.configuration_main["context"]
-        assert context["vars"]["foo"] == "barbar"
-        assert context["env"]["foo"] == "foofoobar"
+        assert context["foo"] == "barbar"
+        assert context["e"]["foo"] == "foofoobar"
 
 
 class TestProjectGroupDefault:
@@ -129,10 +131,11 @@ class TestProjectGroupDefault:
     project = Project(
         project_path=path,
         connection_url='something://database',
-        connection_name='db',
-        env_name='dev',
-        variables={'foo': 'barbar'},
-        env_variables={'foo': 'foofoobar'}
+        context={
+            'c': {'name': 'db'},
+            'e': {'name': 'dev', 'foo': 'foofoobar'},
+            'foo': 'barbar'
+        }
     )
 
     configuration_main = project.configure()
@@ -145,8 +148,8 @@ class TestProjectGroupDefault:
 
     def test_configuration_context_main(self):
         context = self.configuration_main["context"]
-        assert context["vars"]["foo"] == "barbar"
-        assert context["env"]["foo"] == "foofoobar"
+        assert context["foo"] == "barbar"
+        assert context["e"]["foo"] == "foofoobar"
 
 
 class TestProjectOrderExceptions:
@@ -157,8 +160,10 @@ class TestProjectOrderExceptions:
         project = Project(
             project_path=path,
             connection_url='something://database',
-            connection_name='db',
-            env_name='dev',
+            context={
+                'c': {'name': 'db'},
+                'e': {'name': 'dev'}
+            }
         )
         with pytest.raises(GroupNotFound):
             project.configure(group='fake')
@@ -169,8 +174,10 @@ class TestProjectOrderExceptions:
         project = Project(
             project_path=path,
             connection_url='something://database',
-            connection_name='db',
-            env_name='dev',
+            context={
+                'c': {'name': 'db'},
+                'e': {'name': 'dev'}
+            }
         )
         with pytest.raises(OrderNotInRightFormat):
             project.configure(group='main')

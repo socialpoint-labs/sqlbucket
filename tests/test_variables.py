@@ -1,132 +1,116 @@
-from sqlbucket.project import configure_variables
+from sqlbucket.project import ContextMerger
 
 
 class TestVariablesConfiguration:
 
     def test_empty_config(self):
         project_config = dict()
-        submitted_variables = dict()
-        submitted_env_variables = dict()
-        connection_name = 'conn'
-        env_name = 'env'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
+        context = {'c': {'name': 'conn'}, 'e': {'name': 'env'}}
 
-        assert variables == {'vars': dict(), 'env': dict(),
-                             'connection_name': 'conn'}
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
+
+        assert context == {'c': {'name': 'conn'}, 'e': {'name': 'env'}}
 
     def test_connection_and_env_not_in_config(self):
         project_config = {
-            'variables': {'conn1': {'foo': 'bar'}},
-            'env_variables': {'env1': {'foofoo': 'barbar'}}
+            'connection_variables': {'conn1': {'foo': 'bar'}},
+            'environment_variables': {'env1': {'foofoo': 'barbar'}}
         }
-        submitted_variables = dict()
-        submitted_env_variables = dict()
-        connection_name = 'conn2'
-        env_name = 'env2'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
+        context = {'c': {'name': 'conn2'}, 'e': {'name': 'env2'}}
 
-        assert variables == {'vars': dict(),
-                             'env': dict(),
-                             'connection_name': 'conn2'}
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
+
+        assert context == {'c': {'name': 'conn2'}, 'e': {'name': 'env2'}}
 
     def test_connection_and_env_not_in_config_with_submitted_vars(self):
         project_config = {
-            'variables': {'conn1': {'foo': 'bar'}},
-            'env_variables': {'env1': {'foofoo': 'barbar'}}
+            'connection_variables': {'conn1': {'foo': 'bar'}},
+            'environment_variables': {'env1': {'foofoo': 'barbar'}}
         }
-        submitted_variables = {'submitted_foo': 'submitted_bar'}
-        submitted_env_variables = {'submitted_env_foo': 'submitted_env_bar'}
-        connection_name = 'conn2'
-        env_name = 'env2'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
 
-        assert variables == {
-            'vars': {'submitted_foo': 'submitted_bar'},
-            'env': {'submitted_env_foo': 'submitted_env_bar'},
-            'connection_name': 'conn2'
+        context = {
+            'c': {'name': 'conn2'},
+            'e': {'name': 'env2', 'submitted_env_foo': 'submitted_env_bar'},
+            'submitted_foo': 'submitted_bar'
+        }
+
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
+
+        assert context == {
+            'submitted_foo': 'submitted_bar',
+            'e': {'name': 'env2', 'submitted_env_foo': 'submitted_env_bar'},
+            'c': {'name': 'conn2'}
         }
 
     def test_connection_and_env_in_config(self):
         project_config = {
-            'variables': {'conn1': {'foo': 'bar'}},
-            'env_variables': {'env1': {'foofoo': 'barbar'}}
+            'connection_variables': {'conn1': {'foo': 'bar'}},
+            'environment_variables': {'env1': {'foofoo': 'barbar'}}
         }
-        submitted_variables = dict()
-        submitted_env_variables = dict()
-        connection_name = 'conn1'
-        env_name = 'env1'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
+        context = {
+            'c': {'name': 'conn1'},
+            'e': {'name': 'env1'},
+        }
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
 
-        assert variables == {
-            'vars': {'foo': 'bar'},
-            'env': {'foofoo': 'barbar'},
-            'connection_name': 'conn1'
+        assert context == {
+            'e': {'name': 'env1', 'foofoo': 'barbar'},
+            'c': {'name': 'conn1', 'foo': 'bar'}
         }
 
     def test_variables_overwrite(self):
         project_config = {
-            'variables': {'conn1': {'foo': 'bar'}},
+            'connection_variables': {'conn1': {'foo': 'bar'}},
             'env_variables': {'env1': {'foofoo': 'barbar'}}
         }
-        submitted_variables = {'foo': 'barbar'}
-        submitted_env_variables = {'foofoo': 'bar'}
-        connection_name = 'conn1'
-        env_name = 'env1'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
 
-        assert variables == {
-            'vars': {'foo': 'barbar'},
-            'env': {'foofoo': 'bar'},
-            'connection_name': 'conn1'
+        context = {
+            'foo': 'barbar',
+            'c': {'name': 'conn1'},
+            'e': {'name': 'env1', 'foofoo': 'bar'},
+        }
+
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
+
+        assert context == {
+            'foo': 'barbar',
+            'e': {'name': 'env1', 'foofoo': 'bar'},
+            'c': {'name': 'conn1', 'foo': 'bar'}
         }
 
     def test_only_submitted_variables(self):
         project_config = dict()
-        submitted_variables = {'foo': 'bar'}
-        submitted_env_variables = {'foofoo': 'barbar'}
-        connection_name = 'conn1'
-        env_name = 'env1'
-        variables = configure_variables(
-            project_config=project_config,
-            submitted_variables=submitted_variables,
-            submitted_env_variables=submitted_env_variables,
-            connection_name=connection_name,
-            env_name=env_name
-        )
 
-        assert variables == {
-            'vars': {'foo': 'bar'},
-            'env': {'foofoo': 'barbar'},
-            'connection_name': 'conn1'
+        context = {
+            'foo': 'barbar',
+            'c': {'name': 'conn1'},
+            'e': {'name': 'env1', 'foofoo': 'barbar'},
+        }
+
+        context = ContextMerger(
+            context=context,
+            context_from_config=project_config
+        ).merge()
+
+        # context should have not changed.
+        assert context == {
+            'foo': 'barbar',
+            'c': {'name': 'conn1'},
+            'e': {'name': 'env1', 'foofoo': 'barbar'},
         }
 

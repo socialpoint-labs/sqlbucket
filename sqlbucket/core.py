@@ -1,5 +1,6 @@
 from sqlbucket.project import Project
-from sqlbucket.exceptions import ProjectNotFound, ConnectionNotFound
+from sqlbucket.exceptions import ProjectNotFound, ConnectionNotFound, \
+    ReservedVariableNameError
 from sqlbucket.cli import load_cli
 from pathlib import Path
 from distutils.dir_util import copy_tree
@@ -12,17 +13,18 @@ class SQLBucket:
         self,
         projects_folder: str = 'projects',
         connections: dict = None,
-        env_name: str = None,
-        env_variables: dict = None,
+        connection_variables: dict = None,
+        env_name: str = None,       # todo: see if we can remove
+        environment_variables: dict = None,
         macro_folder: str = None
     ):
 
         self.projects_path = Path.cwd() / Path(projects_folder)
-
         self.macro_path = Path(macro_folder) if macro_folder is not None else None
         self.connections = connections
+        self.connection_variables = connection_variables or dict()
+        self.environment_variables = environment_variables or dict()
         self.env_name = env_name
-        self.env_variables = env_variables
 
     def load_project(self, project_name: str, connection_name: str,
                      variables: dict = None) -> Project:
@@ -45,13 +47,14 @@ class SQLBucket:
                 f'Project "{project_name}" does not exist.'
             )
 
+        context = self.build_context(
+            connection_name=connection_name, variables=variables
+        )
+
         return Project(
             project_path=str(project_path),
             connection_url=self.connections[connection_name],
-            connection_name=connection_name,
-            variables=variables,
-            env_name=self.env_name,
-            env_variables=self.env_variables,
+            context=context,
             macros_path=self.macro_path
         )
 
@@ -73,3 +76,24 @@ class SQLBucket:
     def cli(self):
         command_line = load_cli(self)
         return command_line()
+
+    def build_context(self, connection_name: str, variables: dict):
+        etl_context = dict()
+
+        # first we add connection variables
+        etl_context['c'] = self.connection_variables.get(connection_name, dict())
+        etl_context['c']['name'] = connection_name
+
+        # then we add global variables
+        etl_context['e'] = self.environment_variables or dict()
+        etl_context['e']['name'] = self.env_name
+
+        if not variables:
+            return etl_context
+
+        for key, value in variables.items():
+            if key in ('c', 'e'):
+                raise ReservedVariableNameError
+            etl_context[key] = value
+
+        return etl_context

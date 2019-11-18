@@ -118,7 +118,7 @@ by using ``union all`` on the query. This is how it could be done:
         0 as expected,
         count(1) as calculated
     from my_table
-    where positive_field in ('high', 'low')
+    where field not in ('high', 'low')
 
 
 
@@ -137,7 +137,7 @@ The following integrity SQL could be done as follow:
         (select sum(revenue) from raw_table) as source,
         (select sum(revenue) from summary_table) as target,
         (select sum(revenue) from raw_table)
-            ==
+            =
         (select sum(revenue) from summary_table) as passed
 
 This could work if revenues were only integers. However, in real life, cost or
@@ -221,20 +221,20 @@ following macro to check nulls in multiple fields from a table.
 
 
 Then, for every tables you want to check for nulls, it would take only the
-following (assuming the macros is written on a file called macros.sql):
+following (assuming the macros is written on a file called macros.j2):
 
 
 .. code-block:: jinja
 
-    {% import 'macros.sql' as macros %}
+    {% import 'macros.j2' as macros %}
 
     {{ macros.check_no_nulls('table_name', ['field_a', 'field_b', 'field_c','field_d'])}}
 
 
 Using macros is an excellent way to prevent writing the same SQL over and over.
-SQLBucket library at the moment contains only one macro, which gives the
-possibility to compare two metrics, and make sure that their difference is
-within a threshold.
+SQLBucket library at the moment contains one macro, which gives the possibility
+to compare two metrics, and make sure that their difference is within a
+threshold.
 
 
 

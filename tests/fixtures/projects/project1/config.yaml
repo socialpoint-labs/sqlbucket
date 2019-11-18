@@ -3,12 +3,18 @@ order:
   - query_two.sql
   - folder1/query_three.sql
 
-variables:
+
+project_variables:
+  foo: bar
+
+
+connection_variables:
   db:
     foo: bar
   db_name:
     foo: barbar
 
-env_variables:
+
+environment_variables:
   dev:
     foo: foobar

@@ -12,3 +12,7 @@ class GroupNotFound(KeyError):
 
 class OrderNotInRightFormat(TypeError):
     pass
+
+
+class ReservedVariableNameError(Exception):
+    pass

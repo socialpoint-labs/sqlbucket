@@ -24,7 +24,7 @@ class TestIntegrityRendering:
     def test_queries(self):
         assert self.integrity.get("queries") == {
             "folder1/integrity2.sql": "foobar",
-            "integrity1.sql": "barbar"
+            "integrity1.sql": "bar"
         }
         assert self.integrity.get("order") == [
             "folder1/integrity2.sql",
