@@ -6,6 +6,9 @@ order:
     - folder1/query_three.sql
 
 
+connection_query: connect_query.sql
+
+
 project_variables:
   foo: barbar
 

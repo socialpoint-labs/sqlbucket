@@ -1,0 +1,1 @@
+set search_path to {{ c.destination_schema }}, {{ c.source_schema }};
