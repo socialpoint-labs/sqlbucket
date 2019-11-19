@@ -1,0 +1,1 @@
+select true as passed
