@@ -24,6 +24,16 @@ class ProjectRunner:
 
         self.verbose = verbose
 
+    def render_queries(self) -> None:
+        for i, query in enumerate(self.configuration["order"]):
+
+            # we skip the queries out of index
+            if i < self.from_step_index or i > self.to_step_index:
+                continue
+            rendered_query = self.configuration["queries"][query]
+            logger.info(f'\n##### Query {str(i + 1)}: {query} #####\n'
+                        f'\n{rendered_query}\n')
+
     def run_project(self) -> None:
         self.starting_logs()
 
@@ -37,7 +47,7 @@ class ProjectRunner:
 
             # we run the query and monitor the time it takes
             query_start = datetime.now()
-            logger.info(f"Now running '{query}'...")
+            logger.info(f"Now running query {str(i + 1)}'{query}'...")
             rendered_query = self.configuration["queries"][query]
             if self.verbose:
                 logger.info(f'\n\n{rendered_query}\n')

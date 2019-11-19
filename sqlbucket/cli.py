@@ -31,10 +31,11 @@ def load_cli(sqlbucket_object):
     @click.option('--to_days', '-td', required=False, default=None, type=str)
     @click.option('--group', '-g', required=False, type=str)
     @click.option('--verbose', '-v', is_flag=True, help="Print queries")
+    @click.option('--rendering', '-r', is_flag=True, help="Only render queries")
     @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
-                from_days, to_days, group, verbose, args):
+                from_days, to_days, group, verbose, rendering, args):
 
         submitted_variables = cli_variables_parser(args)
 
@@ -55,7 +56,12 @@ def load_cli(sqlbucket_object):
             connection_name=db,
             variables=submitted_variables
         )
-        etl.run(from_step=fstep, to_step=tstep, group=group, verbose=verbose)
+        if rendering:
+            etl.render(from_step=fstep, to_step=tstep, group=group)
+        else:
+            etl.run(
+                from_step=fstep, to_step=tstep, group=group, verbose=verbose
+            )
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--name', '-n', required=True, type=str)
