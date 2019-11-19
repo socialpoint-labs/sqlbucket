@@ -2,12 +2,24 @@ order:
   - query_one.sql
   - query_two.sql
 
-variables:
+
+# Project variables can be rendered in SQL as follows: {{ foo }}
+project_variables:
+  foo: bar
+
+
+
+# Connection variables can be rendered in SQL as follows: {{ c.foo }}
+connection_variables:
   connection_name1:
     foo: bar
   connection_name2:
     foo: barbar
 
-env_variables:
+
+# Environment variables can be rendered in SQL as follows: {{ e.foo }}
+environment_variables:
   dev:
-    foo: foobar
+    foo: devbar
+  prod:
+    foo: prodbar

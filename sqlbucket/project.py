@@ -101,21 +101,33 @@ class Project:
             "connection_query": self.get_connection_query()
         }
 
-    def run(self, group: str = None, from_step: int = 1,
-            to_step: int = None) -> None:
+    def run(self, group: str = None, from_step: int = 1, to_step: int = None,
+            verbose: bool = False) -> None:
         configuration = self.configure(group)
         runner = ProjectRunner(
             configuration=configuration,
             from_step=from_step,
-            to_step=to_step
+            to_step=to_step,
+            verbose=verbose
         )
         runner.run_project()
 
-    def run_integrity(self, prefix: str = ''):
+    def render(self, group: str = None, from_step: int = 1,
+               to_step: int = None) -> None:
+        configuration = self.configure(group)
+        runner = ProjectRunner(
+            configuration=configuration,
+            from_step=from_step,
+            to_step=to_step,
+        )
+        runner.render_queries()
+
+    def run_integrity(self, prefix: str = '', verbose: bool = False):
         integrity_configuration = self.configure_integrity()
         return run_integrity(
             configuration=integrity_configuration,
-            prefix=prefix
+            prefix=prefix,
+            verbose=verbose
         )
 
     def get_project_config(self) -> dict:

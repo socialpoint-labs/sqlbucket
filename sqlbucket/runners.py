@@ -11,7 +11,8 @@ class ProjectRunner:
         self,
         configuration: dict,
         from_step: int = 1,
-        to_step: int = None
+        to_step: int = None,
+        verbose: bool = False
     ):
         self.configuration = configuration
         self.from_step_index = from_step - 1
@@ -20,6 +21,18 @@ class ProjectRunner:
 
         if self.from_step_index > self.to_step_index:
             raise Exception('Start step must be lower or equal the final step')
+
+        self.verbose = verbose
+
+    def render_queries(self) -> None:
+        for i, query in enumerate(self.configuration["order"]):
+
+            # we skip the queries out of index
+            if i < self.from_step_index or i > self.to_step_index:
+                continue
+            rendered_query = self.configuration["queries"][query]
+            logger.info(f'\n##### Query {str(i + 1)}: {query} #####\n'
+                        f'\n{rendered_query}\n')
 
     def run_project(self) -> None:
         self.starting_logs()
@@ -34,9 +47,10 @@ class ProjectRunner:
 
             # we run the query and monitor the time it takes
             query_start = datetime.now()
+            logger.info(f"Now running query {str(i + 1)}: '{query}'...")
             rendered_query = self.configuration["queries"][query]
-            logger.info(f"Now running '{query}'...")
-
+            if self.verbose:
+                logger.info(f'\n\n{rendered_query}\n')
             connection.execute(text(rendered_query))
 
             query_end = datetime.now()

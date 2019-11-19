@@ -1,5 +1,6 @@
 import click
-from sqlbucket.utils import logger, n_days_ago, cli_variables_parser
+from sqlbucket.utils import logger, n_days_ago, cli_variables_parser, success
+import sys
 
 
 def load_cli(sqlbucket_object):
@@ -29,10 +30,12 @@ def load_cli(sqlbucket_object):
     @click.option('--from_days', '-fd', required=False, default=None, type=str)
     @click.option('--to_days', '-td', required=False, default=None, type=str)
     @click.option('--group', '-g', required=False, type=str)
+    @click.option('--verbose', '-v', is_flag=True, help="Print queries")
+    @click.option('--rendering', '-r', is_flag=True, help="Only render queries")
     @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
-                from_days, to_days, group, args):
+                from_days, to_days, group, verbose, rendering, args):
 
         submitted_variables = cli_variables_parser(args)
 
@@ -53,15 +56,21 @@ def load_cli(sqlbucket_object):
             connection_name=db,
             variables=submitted_variables
         )
-        etl.run(from_step=fstep, to_step=tstep, group=group)
+        if rendering:
+            etl.render(from_step=fstep, to_step=tstep, group=group)
+        else:
+            etl.run(
+                from_step=fstep, to_step=tstep, group=group, verbose=verbose
+            )
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--name', '-n', required=True, type=str)
     @click.option('--db', '-b', required=True, type=str)
     @click.option('--prefix', '-p', required=False, default='', type=str)
+    @click.option('--verbose', '-v', is_flag=True, help="Print queries")
     @click.pass_obj
     @click.argument('args', nargs=-1)
-    def run_integrity(sqlbucket, name, db, prefix, args):
+    def run_integrity(sqlbucket, name, db, prefix, verbose, args):
 
         submitted_variables = cli_variables_parser(args)
 
@@ -73,6 +82,11 @@ def load_cli(sqlbucket_object):
             connection_name=db,
             variables=submitted_variables
         )
-        etl.run_integrity(prefix=prefix)
+        errors = etl.run_integrity(prefix=prefix, verbose=verbose)
+        if not errors:
+            logger.info(success)
+        else:
+            logger.error(f'#############  {str(errors)} ERRORS  #############')
+            sys.exit(1)   # to be reported as failure in workflow manager
 
     return cli
