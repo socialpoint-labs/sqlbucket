@@ -1,5 +1,6 @@
 import click
-from sqlbucket.utils import logger, n_days_ago, cli_variables_parser
+from sqlbucket.utils import logger, n_days_ago, cli_variables_parser, success
+import sys
 
 
 def load_cli(sqlbucket_object):
@@ -75,6 +76,11 @@ def load_cli(sqlbucket_object):
             connection_name=db,
             variables=submitted_variables
         )
-        etl.run_integrity(prefix=prefix, verbose=verbose)
+        errors = etl.run_integrity(prefix=prefix, verbose=verbose)
+        if errors > 0:
+            logger.log(success)
+        else:
+            logger.error(f'#############  {str(errors)} ERRORS  #############')
+            sys.exit(1)   # to be reported as failure in workflow manager
 
     return cli
