@@ -5,7 +5,7 @@ from sqlbucket.utils import integrity_logo
 from sqlalchemy import text
 
 
-def run_integrity(configuration: dict, prefix: str = ''):
+def run_integrity(configuration: dict, prefix: str = '', verbose: bool = False):
     errors = 0
     logger.info(integrity_logo)
     logger.info(
@@ -19,6 +19,9 @@ def run_integrity(configuration: dict, prefix: str = ''):
             continue
 
         query = configuration["queries"][query_name]
+        if verbose:
+            logger.info(f'Now running:\n\n{query}')
+
         integrity = IntegrityCheck(
             rows=[dict(row) for row in connection.execute(text(query))],
             query_name=query_name
