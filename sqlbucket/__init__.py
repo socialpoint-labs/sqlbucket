@@ -1,6 +1,6 @@
 
 
-__version__ = "0.2.9dev"
+__version__ = "0.2.9"
 
 
 from sqlbucket.core import SQLBucket
