@@ -201,15 +201,19 @@ class TestConnectScript:
     )
     configuration = project.configure()
     integrity_configuration = project.configure_integrity()
+    expected_query = 'set search_path to output_schema, input_schema;'
 
     def test_etl_configuration_with_connect_script(self):
-        assert 'connection_script' in self.configuration
+        assert 'connection_query' in self.configuration
 
     def test_integrity_configuration_with_connect_script(self):
-        assert 'connection_script' in self.integrity_configuration
+        assert 'connection_query' in self.integrity_configuration
 
-    def test_connect_script_query(self):
+    def test_connect_query_etl(self):
+        assert self.configuration['connection_query'] == self.expected_query
+
+    def test_connect_query_integrity(self):
         expected_query = 'set search_path to output_schema, input_schema;'
-        assert self.configuration['connection_script'] == expected_query
-        assert self.integrity_configuration['connection_script'] == expected_query
+        assert self.integrity_configuration['connection_query'] == self.expected_query
+
 

@@ -77,9 +77,9 @@ def create_connection(configuration: dict) -> Connection:
         isolation_level="AUTOCOMMIT"
     )
     connection = engine.connect()
-    if configuration.get('connection_script') is not None:
-        logger.info(f'Running connection script: '
-                    f'{configuration["connection_script"]}')
-        connection.execute(text(configuration['connection_script']))
+    if configuration.get('connection_query') is not None:
+        logger.info(f'Running connection query: '
+                    f'{configuration["connection_query"]}')
+        connection.execute(text(configuration['connection_query']))
 
     return connection

@@ -72,7 +72,7 @@ class Project:
             "connection_url": self.connection_url,
             "connection_name": self.connection_name,
             "project_name": str(self.project_path).split('/')[-1],
-            "connection_script": self.get_connection_query()
+            "connection_query": self.get_connection_query()
         }
 
     def configure_integrity(self) -> dict:
@@ -98,7 +98,7 @@ class Project:
             "connection_url": self.connection_url,
             "connection_name": self.connection_name,
             "project_name": str(self.project_path).split('/')[-1],
-            "connection_script": self.get_connection_query()
+            "connection_query": self.get_connection_query()
         }
 
     def run(self, group: str = None, from_step: int = 1,
@@ -131,7 +131,7 @@ class Project:
         :return: the connection query if any.
         """
 
-        if "connection_script" not in self.project_config:
+        if "connection_query" not in self.project_config:
             return None
 
         queries_path = (Path(self.project_path) / 'queries').resolve()
@@ -142,7 +142,7 @@ class Project:
             searchpath=search_path
         ))
         template = jinja_env.get_template(
-            self.project_config['connection_script']
+            self.project_config['connection_query']
         )
         return template.render(**self.context)
 

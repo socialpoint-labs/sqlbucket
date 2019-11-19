@@ -6,7 +6,7 @@ order:
     - folder1/query_three.sql
 
 
-connection_script: connect_query.sql
+connection_query: connect_query.sql
 
 
 project_variables:
