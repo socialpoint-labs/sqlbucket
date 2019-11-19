@@ -47,7 +47,7 @@ class ProjectRunner:
 
             # we run the query and monitor the time it takes
             query_start = datetime.now()
-            logger.info(f"Now running query {str(i + 1)}'{query}'...")
+            logger.info(f"Now running query {str(i + 1)}: '{query}'...")
             rendered_query = self.configuration["queries"][query]
             if self.verbose:
                 logger.info(f'\n\n{rendered_query}\n')
