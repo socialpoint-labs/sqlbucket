@@ -3,6 +3,7 @@ from sqlbucket.runners import ProjectRunner
 from sqlbucket.integrity import run_integrity
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
+from typing import Optional
 import yaml
 
 
@@ -39,11 +40,10 @@ class Project:
             searchpath=search_path
         ))
 
-        # Defining the queries order. The 'order' attribute
-        # in config can be an array if no group, or a dict
-        # where each attribute is a group name with an array
-        # as a value (the group order). If no group name is
-        # submitted.
+        # The 'order' attribute in config can be an array if no group, or a
+        # dict where each key is a group name with an array as a value (the
+        # group order). If no group name is submitted, but the order is in
+        # group format, it will search for default 'main' group.
         query_order = self.project_config["order"]
         if type(query_order) == list:
             if group:
@@ -71,7 +71,8 @@ class Project:
             "context": self.context,
             "connection_url": self.connection_url,
             "connection_name": self.connection_name,
-            "project_name": str(self.project_path).split('/')[-1]
+            "project_name": str(self.project_path).split('/')[-1],
+            "connection_script": self.get_connection_query()
         }
 
     def configure_integrity(self) -> dict:
@@ -96,7 +97,8 @@ class Project:
             "context": self.context,
             "connection_url": self.connection_url,
             "connection_name": self.connection_name,
-            "project_name": str(self.project_path).split('/')[-1]
+            "project_name": str(self.project_path).split('/')[-1],
+            "connection_script": self.get_connection_query()
         }
 
     def run(self, group: str = None, from_step: int = 1,
@@ -119,6 +121,30 @@ class Project:
     def get_project_config(self) -> dict:
         config_path = (self.project_path / 'config.yaml').resolve()
         return yaml.load(open(config_path, 'r').read(), Loader=yaml.FullLoader)
+
+    def get_connection_query(self) -> Optional[str]:
+        """
+        We create the jinja env from scratch again from the queries folder.
+        This is done in case we run the integrity, which will need the
+        connection script too. Not really clean, as we create the same
+        environment twice.
+        :return: the connection query if any.
+        """
+
+        if "connection_script" not in self.project_config:
+            return None
+
+        queries_path = (Path(self.project_path) / 'queries').resolve()
+        search_path = [str(queries_path)]
+        if self.macros_path:
+            search_path.append(str(self.macros_path))
+        jinja_env = Environment(loader=FileSystemLoader(
+            searchpath=search_path
+        ))
+        template = jinja_env.get_template(
+            self.project_config['connection_script']
+        )
+        return template.render(**self.context)
 
 
 class ContextMerger:

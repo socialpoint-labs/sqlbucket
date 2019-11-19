@@ -25,7 +25,7 @@ class ProjectRunner:
         self.starting_logs()
 
         start = datetime.now()
-        connection = create_connection(self.configuration["connection_url"])
+        connection = create_connection(self.configuration)
         for i, query in enumerate(self.configuration["order"]):
 
             # we skip the queries out of index
@@ -70,11 +70,16 @@ class ProjectRunner:
         logger.info(f"Project completed in {end - start}")
 
 
-def create_connection(connection_url: str) -> Connection:
+def create_connection(configuration: dict) -> Connection:
     engine = create_engine(
-        connection_url,
+        configuration['connection_url'],
         poolclass=NullPool,
         isolation_level="AUTOCOMMIT"
     )
     connection = engine.connect()
+    if configuration.get('connection_script') is not None:
+        logger.info(f'Running connection script: '
+                    f'{configuration["connection_script"]}')
+        connection.execute(text(configuration['connection_script']))
+
     return connection

@@ -181,3 +181,35 @@ class TestProjectOrderExceptions:
         )
         with pytest.raises(OrderNotInRightFormat):
             project.configure(group='main')
+
+
+class TestConnectScript:
+
+    path = str(
+        (Path(__file__).parent / Path('fixtures/projects/project2')))
+    project = Project(
+        project_path=path,
+        connection_url='something://database',
+        context={
+            'c': {
+                'name': 'db',
+                'destination_schema': 'output_schema',
+                'source_schema': 'input_schema'
+            },
+            'e': {'name': 'dev'}
+        }
+    )
+    configuration = project.configure()
+    integrity_configuration = project.configure_integrity()
+
+    def test_etl_configuration_with_connect_script(self):
+        assert 'connection_script' in self.configuration
+
+    def test_integrity_configuration_with_connect_script(self):
+        assert 'connection_script' in self.integrity_configuration
+
+    def test_connect_script_query(self):
+        expected_query = 'set search_path to output_schema, input_schema;'
+        assert self.configuration['connection_script'] == expected_query
+        assert self.integrity_configuration['connection_script'] == expected_query
+

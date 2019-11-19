@@ -12,7 +12,7 @@ def run_integrity(configuration: dict, prefix: str = ''):
         f'Starting integrity checks for {configuration["project_name"]} '
         f'with connection {configuration["connection_name"]}'
     )
-    connection = create_connection(configuration["connection_url"])
+    connection = create_connection(configuration)
     for query_name in configuration["order"]:
 
         if not query_name.startswith(prefix):
