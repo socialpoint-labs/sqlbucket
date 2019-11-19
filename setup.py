@@ -22,7 +22,7 @@ setup(
     ],
     include_package_data=True,
     description='SQLBucket - Write your SQL ETL flow and ETL integrity tool.',
-    long_description='SQLBucket long description coming soon ...',
+    long_description=open('README.rst', 'r').read(),
     version=version,
     author='Philippe Oger',
     author_email='phil.oger@gmail.com',
