@@ -16,3 +16,7 @@ class OrderNotInRightFormat(TypeError):
 
 class ReservedVariableNameError(Exception):
     pass
+
+
+class PassedFieldNotInQuery(Exception):
+    pass

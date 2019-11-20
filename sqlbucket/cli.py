@@ -83,10 +83,8 @@ def load_cli(sqlbucket_object):
             variables=submitted_variables
         )
         errors = etl.run_integrity(prefix=prefix, verbose=verbose)
-        if not errors:
-            logger.info(success)
-        else:
-            logger.error(f'#############  {str(errors)} ERRORS  #############')
-            sys.exit(1)   # to be reported as failure in workflow manager
+
+        if errors:
+            sys.exit(3)
 
     return cli
