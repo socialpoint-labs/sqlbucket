@@ -5,6 +5,7 @@ from sqlbucket.cli import load_cli
 from pathlib import Path
 from distutils.dir_util import copy_tree
 import os
+from typing import List, Callable
 
 
 class SQLBucket:
@@ -16,7 +17,8 @@ class SQLBucket:
         connection_variables: dict = None,
         env_name: str = None,       # todo: see if we can remove
         environment_variables: dict = None,
-        macro_folder: str = None
+        macro_folder: str = None,
+        functions_registry: List[Callable] = None
     ):
 
         self.projects_path = Path.cwd() / Path(projects_folder)
@@ -25,6 +27,7 @@ class SQLBucket:
         self.connection_variables = connection_variables or dict()
         self.environment_variables = environment_variables or dict()
         self.env_name = env_name
+        self.functions_registry = functions_registry or list()
 
     def load_project(self, project_name: str, connection_name: str,
                      variables: dict = None) -> Project:
@@ -58,7 +61,7 @@ class SQLBucket:
             macros_path=self.macro_path
         )
 
-    def create_project(self, project_name):
+    def create_project(self, project_name: str):
         if project_name in os.listdir(self.projects_path):
             raise Exception('Project name already used. Find another name')
 
@@ -66,7 +69,7 @@ class SQLBucket:
         new_project_folder = (self.projects_path / project_name).resolve()
         copy_tree(str(sql_template_folder), str(new_project_folder))
 
-    def connection_exists(self, connection_name) -> bool:
+    def connection_exists(self, connection_name: str) -> bool:
         if connection_name in self.connections:
             return True
         if os.environ.get(connection_name) is not None:
@@ -88,12 +91,21 @@ class SQLBucket:
         etl_context['e'] = self.environment_variables or dict()
         etl_context['e']['name'] = self.env_name
 
+        if self.functions_registry:
+            etl_context['f'] = dict()
+            for func in self.functions_registry:
+                etl_context['f'][func.__name__] = func
+
         if not variables:
             return etl_context
 
         for key, value in variables.items():
-            if key in ('c', 'e'):
-                raise ReservedVariableNameError
+            if key in ('c', 'e', 'f'):
+                raise ReservedVariableNameError(f'{key} is a reserved name'
+                                                f'Use another key name')
             etl_context[key] = value
 
         return etl_context
+
+    def register_function(self, func: Callable):
+        self.functions_registry.append(func)
