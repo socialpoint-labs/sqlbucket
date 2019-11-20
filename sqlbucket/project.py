@@ -32,13 +32,7 @@ class Project:
 
     def configure(self, group: str = None) -> dict:
         # Setting up the jinja environment
-        queries_path = (Path(self.project_path) / 'queries').resolve()
-        search_path = [str(queries_path)]
-        if self.macros_path:
-            search_path.append(str(self.macros_path))
-        jinja_env = Environment(loader=FileSystemLoader(
-            searchpath=search_path
-        ))
+        jinja_env = self.create_jinja_env(folder='queries')
 
         # The 'order' attribute in config can be an array if no group, or a
         # dict where each key is a group name with an array as a value (the
@@ -77,13 +71,7 @@ class Project:
 
     def configure_integrity(self) -> dict:
         # Setting up the jinja environment
-        integrity_path = (Path(self.project_path) / 'integrity').resolve()
-        search_path = [str(integrity_path)]
-        if self.macros_path:
-            search_path.append(str(self.macros_path))
-        jinja_env = Environment(loader=FileSystemLoader(
-            searchpath=search_path
-        ))
+        jinja_env = self.create_jinja_env(folder='integrity')
 
         order = jinja_env.list_templates('sql')
         queries = dict()
@@ -146,17 +134,21 @@ class Project:
         if "connection_query" not in self.project_config:
             return None
 
-        queries_path = (Path(self.project_path) / 'queries').resolve()
+        jinja_env = self.create_jinja_env(folder='queries')
+        template = jinja_env.get_template(
+            self.project_config['connection_query']
+        )
+        return template.render(**self.context)
+
+    def create_jinja_env(self, folder: str) -> Environment:
+        queries_path = (Path(self.project_path) / folder).resolve()
         search_path = [str(queries_path)]
         if self.macros_path:
             search_path.append(str(self.macros_path))
         jinja_env = Environment(loader=FileSystemLoader(
             searchpath=search_path
         ))
-        template = jinja_env.get_template(
-            self.project_config['connection_query']
-        )
-        return template.render(**self.context)
+        return jinja_env
 
 
 class ContextMerger:
