@@ -94,7 +94,7 @@ class IntegrityCheck:
 
     def is_passed_field_missing(self):
         first_item = self.rows[0]
-        if not first_item.get('passed'):
+        if first_item.get('passed') is None:
             return True
         return False
 
