@@ -74,7 +74,11 @@ Command: run-job
 +--------------------+--------------+-------------------------------------------------------------------------+
 | ``--to_days``      | ``-td``      |  Placeholder to put a date "to" variable by telling number of days ago  |
 +--------------------+--------------+-------------------------------------------------------------------------+
-| ``--group``        | ``-g``       |  Placeholder to put a date "to" variable by telling number of days ago  |
+| ``--group``        | ``-g``       |  Name of the group to run from the ``order`` attribute in config.yaml   |
++--------------------+--------------+-------------------------------------------------------------------------+
+| ``--verbose``      | ``-v``       |  Show queries in terminal before running them                           |
++--------------------+--------------+-------------------------------------------------------------------------+
+| ``--render``       | ``-r``       |  Will only render and print the queries in terminal without running them|
 +--------------------+--------------+-------------------------------------------------------------------------+
 
 Some examples:
@@ -95,7 +99,7 @@ To run your project only from the second query, until step 4 exclusively
 
 
 To create ``from`` and ``to`` variables, that you can use in SQL content
-using ``{{ vars.from }}`` and ``{{ vars.to }}``:
+using ``{{ from }}`` and ``{{ to }}``:
 
 .. code-block:: bash
 
@@ -128,15 +132,17 @@ If from and to variables are not indicated it will generates 3 days ago as
 Command: run-integrity
 ----------------------
 
-+-----------------+--------------+-------------------------------------+
-| **parameter**   | **shortcut** | **description**                     |
-+-----------------+--------------+-------------------------------------+
-| ``--name``      | ``-n``       |  Name of new project                |
-+-----------------+--------------+-------------------------------------+
-| ``--db``        | ``-b``       |  Database name                      |
-+-----------------+--------------+-------------------------------------+
-| ``--prefix``    | ``-p``       |  Prefix of the test you want to run |
-+-----------------+--------------+-------------------------------------+
++-----------------+--------------+--------------------------------------------+
+| **parameter**   | **shortcut** | **description**                            |
++-----------------+--------------+--------------------------------------------+
+| ``--name``      | ``-n``       |  Name of new project                       |
++-----------------+--------------+--------------------------------------------+
+| ``--db``        | ``-b``       |  Database name                             |
++-----------------+--------------+--------------------------------------------+
+| ``--prefix``    | ``-p``       |  Prefix of the test you want to run        |
++-----------------+--------------+--------------------------------------------+
+| ``--verbose``   | ``-v``       |  Display queries in terminal when running  |
++-----------------+--------------+--------------------------------------------+
 
 
 To run every integrity checks query found in the integrity folder

@@ -1,6 +1,8 @@
 from sqlbucket import SQLBucket
 from sqlbucket.integrity import IntegrityCheck
+from sqlbucket.exceptions import PassedFieldNotInQuery
 from pathlib import Path
+import pytest
 
 
 class TestIntegrityRendering:
@@ -51,3 +53,8 @@ class TestIntegrityCheck:
         assert integrity.has_passed() is False
         assert integrity.log_summary('whatever') == 'FAILED'
 
+    def test_error_missing_passed_field(self):
+        rows = [{"whatever": True}]
+        integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
+        with pytest.raises(PassedFieldNotInQuery):
+            integrity.log_summary('whatever')

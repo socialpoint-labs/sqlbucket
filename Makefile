@@ -20,3 +20,5 @@ release:
 	python setup.py sdist bdist_wheel
 	twine upload dist/*
 
+empty-dist:
+	rm dist/*
