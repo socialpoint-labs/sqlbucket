@@ -35,6 +35,7 @@ def run_integrity(configuration: dict, prefix: str = '', verbose: bool = False):
                 logger.info(
                     f"Showing integrity report for {query_name.upper()}: \n")
                 integrity.log_rows()
+                logger.info(query + '\n')
 
         except SQLAlchemyError as e:
             errors += 1
