@@ -14,12 +14,13 @@ def run_integrity(configuration: dict, prefix: str = '', verbose: bool = False):
         f'Starting integrity checks for {configuration["project_name"]} '
         f'with connection {configuration["connection_name"]}'
     )
+    number_of_tests_ran = 0
     connection = create_connection(configuration)
     for query_name in configuration["order"]:
 
         if not query_name.startswith(prefix):
             continue
-
+        number_of_tests_ran += 1
         query = configuration["queries"][query_name]
         if verbose:
             logger.info(f'Now running:\n\n{query}')
@@ -44,15 +45,16 @@ def run_integrity(configuration: dict, prefix: str = '', verbose: bool = False):
             continue
 
     # logging summary
-    total_tested = len(configuration["order"])
     if not errors:
-        logger.info(f'ALL PASSED - ({str(total_tested)}/{str(total_tested)})')
+        logger.info(f'ALL PASSED - '
+                    f'({str(number_of_tests_ran)}/{str(number_of_tests_ran)})')
         logger.info(success)
 
     else:
         logger.error(f'\n\n########## {str(errors)} ERROR(S) ##########'
-                     f'\nPARTIALLY PASSED - '
-                     f'({str(total_tested - errors)}/{str(total_tested)})\n\n')
+                     f'\nINTEGRITY FAILURE - '
+                     f'({str(number_of_tests_ran - errors)}/'
+                     f'{str(number_of_tests_ran)})\n\n')
     return errors
 
 
@@ -63,6 +65,8 @@ class IntegrityCheck:
         self.query_name = query_name
 
     def has_passed(self) -> bool:
+        if not self.rows:
+            return True
         for item in self.rows:
             if not item["passed"]:
                 return False
@@ -81,9 +85,16 @@ class IntegrityCheck:
             f'Integrity {status}, ({succeeded}/{len(self.rows)}) '
             f'for {query_name}'
         )
+        if not self.rows:
+            logger.warning(f'No rows returned from {self.query_name} integrity'
+                           f' check. We make it pass, but makes sure this is'
+                           f' expected behavior.')
         return status
 
     def log_rows(self) -> print:
+        if not self.rows:
+            print('No rows to display')
+            return
         keys = self.rows[0].keys()
         tabulator = [list(keys)]
         for item in self.rows:
@@ -94,6 +105,8 @@ class IntegrityCheck:
         print(tabulate(tabulator, headers="firstrow", tablefmt="pipe") + '\n')
 
     def is_passed_field_missing(self):
+        if not self.rows:
+            return False
         first_item = self.rows[0]
         if first_item.get('passed') is None:
             return True
