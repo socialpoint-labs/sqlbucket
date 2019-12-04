@@ -58,3 +58,9 @@ class TestIntegrityCheck:
         integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
         with pytest.raises(PassedFieldNotInQuery):
             integrity.log_summary('whatever')
+
+    def test_null_passed_field(self):
+        rows = [{"passed": None}]
+        integrity = IntegrityCheck(rows=rows, query_name='foo.sql')
+        assert integrity.has_passed() is False
+        assert integrity.log_summary('whatever') == 'FAILED'
