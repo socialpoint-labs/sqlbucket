@@ -46,9 +46,9 @@ Command: create-project
 
 .. code-block:: bash
 
-    python cli.py run-job -n my_etl -b dbname
+    python cli.py create-project -n my_etl
 
-This create a new project folder in your sqlbucket projects, with the right
+This creates a new project folder in your sqlbucket projects, with the right
 folder convention to work with sqlbucket.
 
 
