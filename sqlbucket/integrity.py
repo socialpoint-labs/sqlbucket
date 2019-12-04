@@ -108,7 +108,7 @@ class IntegrityCheck:
         if not self.rows:
             return False
         first_item = self.rows[0]
-        if first_item.get('passed') is None:
-            return True
-        return False
+        if 'passed' in first_item:
+            return False
+        return True
 
