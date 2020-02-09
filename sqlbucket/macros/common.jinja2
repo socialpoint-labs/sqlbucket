@@ -1,0 +1,53 @@
+{% macro is_unique(field, table) %}
+    select
+        '{{ table }}:{{ field }}_is_unique' as integrity_check,
+        count(distinct({{ field }})) as expected,
+        count(1) as calculated,
+        count(distinct({{ field }})) = count(1) as passed
+    from {{ table }}
+{% endmacro %}
+
+
+
+{% macro has_size(table, target_size) %}
+    select
+        '{{ table }}_has_size' as integrity_check,
+        {{ target_size }} as expected,
+        count(1) as calculated,
+        count(1) = {{ target_size }} as passed
+    from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_complete(field, table) %}
+    select
+        '{{ table }}:{{ field }}_is_complete' as integrity_check,
+        count(1) as expected,
+        count({{ field }}) as calculated,
+        count(1) = count({{ field }}) as passed
+    from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_contained_in(table, field, values) %}
+    select
+        '{{ table }}:{{ field }}_is_contained_in' as integrity_check,
+        count(1) as expected,
+        count(case when {{ field }} in {{ values }} then 1 else 0 end) as calculated,
+        count(1) = count(case when {{ field }} in {{ values }} then 1 else 0 end) as passed
+    from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_non_negative(field, table) %}
+    select
+        '{{ table }}:{{ field }}_is_non_negative' as integrity_check,
+        count(1) as expected,
+        count(case when {{ field }} >= 0 then 1 else 0 end) as calculated,
+        count(1) = count(case when {{ field }} >= 0 then 1 else 0 end) as passed
+    from {{ table }}
+{% endmacro %}
+
