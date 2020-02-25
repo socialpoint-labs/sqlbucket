@@ -40,7 +40,7 @@ def load_cli(sqlbucket_object):
     @click.option('--group', '-g', required=False, type=str)
     @click.option('--verbose', '-v', is_flag=True, help="Print queries")
     @click.option('--rendering', '-r', is_flag=True, help="Only render queries")
-    @click.option('--all', '-all', is_flag=True, help="All apps")
+    @click.option('--all', '-all', is_flag=True, help="All dbs")
     @click.option('--edb', '-x', required=False, type=str, help="Excluded dbs")
     @click.pass_obj
     @click.argument('args', nargs=-1)
