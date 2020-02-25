@@ -4,14 +4,6 @@ import sys
 import yaml
 
 
-def every_dbs(env):
-    connections = yaml.load(
-        open(f'configs/{env}/connection_urls.yaml', 'r'),
-        Loader=yaml.FullLoader
-    )
-    return list(connections.keys())
-
-
 def load_cli(sqlbucket_object):
     @click.group()
     @click.pass_context
@@ -65,7 +57,7 @@ def load_cli(sqlbucket_object):
         if db:
             dbs = db.split(',')
         elif all:
-            dbs = every_dbs(sqlbucket.env_name)
+            dbs = list(sqlbucket.connections.keys())
         else:
             print(f"Either parameter db (-b) or (--all) flag is required")
 
