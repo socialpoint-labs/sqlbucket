@@ -23,9 +23,9 @@ from {{ table }}
 {% macro has_row_count_between(table, min_size, max_size) %}
 select
     '{{ table }}_has_row_count_between_{{ min_size }}_and_{{ max_size }}' as integrity_check,
-    {{ target_size }} as expected,
+    {{ min_size }} as expected,
     count(1) as calculated,
-    count(1) = {{ target_size }} as passed
+    count(1) >= {{ min_size }} and count(1) <= {{ max_size }} as passed
 from {{ table }}
 {% endmacro %}
 
@@ -46,8 +46,8 @@ from {{ table }}
 select
     '{{ table }}:{{ column }}_is_contained_in' as integrity_check,
     count(1) as expected,
-    count(case when {{ column }} in {{ values }} then 1 else 0 end) as calculated,
-    count(1) = count(case when {{ column }} in {{ values }} then 1 else 0 end) as passed
+    count(case when {{ column }} in ({{ values|join(', ') }}) then 1 else 0 end) as calculated,
+    count(1) = count(case when {{ column }} in {{ values|join(', ') }} then 1 else 0 end) as passed
 from {{ table }}
 {% endmacro %}
 
@@ -66,7 +66,7 @@ from {{ table }}
 
 {% macro are_within_threshold(scalar_a, scalar_b, threshold, integrity_check_name=None) %}
 select
-    {% if not integrity_check_name %}'source_to_target_inntegrity_check{% else %}{{ integrity_check_name }}{% endif %} as integrity_check
+    {% if not integrity_check_name %}'source_to_target_integrity_check{% else %}{{ integrity_check_name }}{% endif %} as integrity_check
     ({{ scalar_a }}) as expected,
     ({{ scalar_b }}) as calculated,
     abs((({{ scalar_a }}) - ({{ scalar_b }})) / nullif(({{ scalar_b }}), 0)) <= {{ threshold }}
