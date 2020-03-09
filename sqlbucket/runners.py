@@ -43,7 +43,7 @@ class ProjectRunner:
         connection = create_connection(
             self.configuration, isolation_level=self.isolation_level
         )
-        
+
         for i, query in enumerate(self.configuration["order"]):
 
             # we skip the queries out of index
@@ -89,7 +89,8 @@ class ProjectRunner:
         logger.info(f"Project completed in {end - start}")
 
 
-def create_connection(configuration: dict, isolation_level: str) -> Connection:
+def create_connection(
+        configuration: dict, isolation_level: str = None) -> Connection:
     # todo: a user may prefer to run a session that commits data only at the
     #  very end of the ETL instead of an auto commit execution at engine level.
 
