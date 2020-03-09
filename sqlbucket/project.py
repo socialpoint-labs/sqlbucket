@@ -90,13 +90,14 @@ class Project:
         }
 
     def run(self, group: str = None, from_step: int = 1, to_step: int = None,
-            verbose: bool = False) -> None:
+            verbose: bool = False, isolation_level: str = None) -> None:
         configuration = self.configure(group)
         runner = ProjectRunner(
             configuration=configuration,
             from_step=from_step,
             to_step=to_step,
-            verbose=verbose
+            verbose=verbose,
+            isolation_level=isolation_level
         )
         runner.run_project()
 
