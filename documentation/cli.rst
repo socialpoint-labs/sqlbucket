@@ -76,6 +76,8 @@ Command: run-job
 +--------------------+--------------+-------------------------------------------------------------------------+
 | ``--group``        | ``-g``       |  Name of the group to run from the ``order`` attribute in config.yaml   |
 +--------------------+--------------+-------------------------------------------------------------------------+
+| ``--isolation``    | ``-i``       |  Set isolation level in case default from DB is not what you want       |
++--------------------+--------------+-------------------------------------------------------------------------+
 | ``--verbose``      | ``-v``       |  Show queries in terminal before running them                           |
 +--------------------+--------------+-------------------------------------------------------------------------+
 | ``--render``       | ``-r``       |  Will only render and print the queries in terminal without running them|

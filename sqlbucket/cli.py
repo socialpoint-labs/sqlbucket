@@ -30,7 +30,7 @@ def load_cli(sqlbucket_object):
     @click.option('--from_days', '-fd', required=False, default=None, type=str)
     @click.option('--to_days', '-td', required=False, default=None, type=str)
     @click.option('--group', '-g', required=False, type=str)
-    @click.option('--isolation_level', '-i', required=False, default=None, type=str)
+    @click.option('--isolation', '-i', required=False, default=None, type=str)
     @click.option('--verbose', '-v', is_flag=True, help="Print queries")
     @click.option('--rendering', '-r', is_flag=True, help="Only render queries")
     @click.option('--all', '-all', is_flag=True, help="All dbs")
@@ -38,7 +38,7 @@ def load_cli(sqlbucket_object):
     @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
-                from_days, to_days, group, isolation_level, verbose, rendering,
+                from_days, to_days, group, isolation, verbose, rendering,
                 all, edb, args):
 
         submitted_variables = cli_variables_parser(args)
@@ -55,8 +55,8 @@ def load_cli(sqlbucket_object):
         logger.info('Variables used')
         logger.info(submitted_variables)
 
-        if isolation_level:
-            isolation_level = isolation_level.upper()
+        if isolation:
+            isolation = isolation.upper()
 
         # included dbs
         if db:
@@ -85,7 +85,7 @@ def load_cli(sqlbucket_object):
                     to_step=tstep,
                     group=group,
                     verbose=verbose,
-                    isolation_level=isolation_level
+                    isolation_level=isolation
                 )
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
