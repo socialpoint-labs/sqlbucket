@@ -1,0 +1,45 @@
+{% macro column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function) %}
+select
+    '{{ table }}:{{ column }}_{{ aggregation_function }}_between_{{ lower_value }}_and_{{ higher_value }}' as integrity_check,
+    '{{ lower_value }} < {{ aggregation_function }}({{ column }}) < {{ higher_value }}' as expected,
+    {{ aggregation_function }}({{ column }}) as calculated,
+    {{ aggregation_function }}({{ column }}) >= {{ lower_value }} and {{ aggregation_function }}({{ column }}) <= {{ higher_value }} as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro column_max_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='max') }}
+{% endmacro %}
+
+
+
+{% macro column_min_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='min') }}
+{% endmacro %}
+
+
+
+{% macro column_sum_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='sum') }}
+{% endmacro %}
+
+
+
+{% macro column_mean_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='mean') }}
+{% endmacro %}
+
+
+
+{% macro column_median_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='median') }}
+{% endmacro %}
+
+
+
+{% macro column_stdev_to_be_between(table, column, lower_value, higher_value) %}
+{{ column_aggregation_to_be_between(table, column, lower_value, higher_value, aggregation_function='stdev') }}
+{% endmacro %}
+

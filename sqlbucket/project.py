@@ -141,8 +141,9 @@ class Project:
         return template.render(**self.context)
 
     def create_jinja_env(self, folder: str) -> Environment:
+        macro_folder_from_lib = Path(__file__).parent / 'macros'
         queries_path = (Path(self.project_path) / folder).resolve()
-        search_path = [str(queries_path)]
+        search_path = [str(queries_path), str(macro_folder_from_lib)]
         if self.macros_path:
             search_path.append(str(self.macros_path))
         jinja_env = Environment(loader=FileSystemLoader(

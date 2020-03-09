@@ -85,10 +85,21 @@ class ProjectRunner:
 
 
 def create_connection(configuration: dict) -> Connection:
+    # todo: isolation parameter consider possibility to set different isolation
+    #  level.
+    # todo: a user may prefer to run a session that commits data only at the
+    #  very end of the ETL instead of an auto commit execution at engine level.
+
+    isolation_level = "AUTOCOMMIT"
+
+    # SQLITE does not have autocommit, so we set to a more
+    if configuration['connection_url'][:6] == 'sqlite':
+        isolation_level = 'SERIALIZABLE'
+
     engine = create_engine(
         configuration['connection_url'],
         poolclass=NullPool,
-        isolation_level="AUTOCOMMIT"
+        isolation_level=isolation_level
     )
     connection = engine.connect()
     if configuration.get('connection_query') is not None:

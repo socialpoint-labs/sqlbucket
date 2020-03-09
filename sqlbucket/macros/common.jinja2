@@ -1,0 +1,75 @@
+{% macro is_unique(column, table) %}
+select
+    '{{ table }}:{{ column }}_is_unique' as integrity_check,
+    count(distinct({{ column }})) as expected,
+    count(1) as calculated,
+    count(distinct({{ column }})) = count(1) as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro has_row_count(table, target_size) %}
+select
+    '{{ table }}_has_row_count_{{ target_size }}' as integrity_check,
+    {{ target_size }} as expected,
+    count(1) as calculated,
+    count(1) = {{ target_size }} as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro has_row_count_between(table, min_size, max_size) %}
+select
+    '{{ table }}_has_row_count_between_{{ min_size }}_and_{{ max_size }}' as integrity_check,
+    {{ min_size }} as expected,
+    count(1) as calculated,
+    count(1) >= {{ min_size }} and count(1) <= {{ max_size }} as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_complete(column, table, threshold=1) %}
+select
+    '{{ table }}:{{ column }}_is_complete_threshold_{{ threshold }}' as integrity_check,
+    count(1) as expected,
+    count({{ column }}) as calculated,
+    count({{ column }}) / count(1) >= {{ threshold }} as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_contained_in(table, column, values) %}
+select
+    '{{ table }}:{{ column }}_is_contained_in' as integrity_check,
+    count(1) as expected,
+    count(case when {{ column }} in ({{ values|join(', ') }}) then 1 else 0 end) as calculated,
+    count(1) = count(case when {{ column }} in {{ values|join(', ') }} then 1 else 0 end) as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro is_non_negative(column, table) %}
+select
+    '{{ table }}:{{ column }}_is_non_negative' as integrity_check,
+    count(1) as expected,
+    count(case when {{ column }} >= 0 then 1 else 0 end) as calculated,
+    count(1) = count(case when {{ column }} >= 0 then 1 else 0 end) as passed
+from {{ table }}
+{% endmacro %}
+
+
+
+{% macro are_within_threshold(scalar_a, scalar_b, threshold, integrity_check_name=None) %}
+select
+    {% if not integrity_check_name %}'source_to_target_integrity_check{% else %}{{ integrity_check_name }}{% endif %} as integrity_check
+    ({{ scalar_a }}) as expected,
+    ({{ scalar_b }}) as calculated,
+    abs((({{ scalar_a }}) - ({{ scalar_b }})) / nullif(({{ scalar_b }}), 0)) <= {{ threshold }}
+    or ( (nvl(({{ scalar_a }}), 0 )) = 0 and (nvl(({{ scalar_b }}), 0)) = 0 ) as passed
+{% endmacro %}
+
