@@ -1,4 +1,4 @@
-{% macro is_unique(column, table) %}
+{% macro is_unique(table, column) %}
 select
     '{{ table }}:{{ column }}_is_unique' as integrity_check,
     count(distinct({{ column }})) as expected,
@@ -31,7 +31,7 @@ from {{ table }}
 
 
 
-{% macro is_complete(column, table, threshold=1) %}
+{% macro is_complete(table, column, threshold=1) %}
 select
     '{{ table }}:{{ column }}_is_complete_threshold_{{ threshold }}' as integrity_check,
     count(1) as expected,
@@ -53,7 +53,7 @@ from {{ table }}
 
 
 
-{% macro is_non_negative(column, table) %}
+{% macro is_non_negative(table, column) %}
 select
     '{{ table }}:{{ column }}_is_non_negative' as integrity_check,
     count(1) as expected,
