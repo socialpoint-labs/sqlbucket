@@ -221,33 +221,20 @@ following macro to check nulls in multiple fields from a table.
 
 
 Then, for every tables you want to check for nulls, it would take only the
-following (assuming the macros is written on a file called macros.j2):
+following (assuming the macros is written on a file called macros.jinja2):
 
 
 .. code-block:: jinja
 
-    {% import 'macros.j2' as macros %}
+    {% import 'macros.jinja2' as macros %}
 
     {{ macros.check_no_nulls('table_name', ['field_a', 'field_b', 'field_c','field_d'])}}
 
 
 Using macros is an excellent way to prevent writing the same SQL over and over.
-SQLBucket library at the moment contains one macro, which gives the possibility
-to compare two metrics, and make sure that their difference is within a
-threshold.
+SQLBucket library contains a list of macros already coded for immediate use.
+You can refer to the `list of macros on its dedicated documentation page`_.
 
+.. _list of macros on its dedicated documentation page: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/macros.rst
 
-
-.. code-block:: jinja
-
-    {% import 'macros.j2' as macros %}
-
-    {% set sum_source = 'select sum(revenue) from source_table' %}
-    {% set sum_target = 'select sum(revenue) from target_table' %}
-
-    {{ macros.are_within_threshold(sum_source, sum_target, 0.01) }}
-
-
-This will generate an SQL query that will return True if the sum of the target
-table is within the threshold given (in this case 1%).
 
