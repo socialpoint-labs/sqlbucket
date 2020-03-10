@@ -143,6 +143,8 @@ your integrity checks for a given database configuration.
     project.run_integrity()
 
 
+We recommend setting your connection urls as environment variables for security
+purposes.
 
 Template project
 ----------------
