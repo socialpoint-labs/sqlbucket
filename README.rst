@@ -5,15 +5,15 @@ SQLBucket
     :target: https://travis-ci.org/socialpoint-labs/sqlbucket
 
 
-SQLBucket was built to help write, orchestrate and validate SQL data pipelines.
-It gives the possibility to set variables and introduces some control flow
-using the fantastic Jinja2 library, and make your queries more dynamic when
-writing them. It also implements a very simplistic unit and integration test
-framework where you can validate the results of your ETL in the form of SQL
-checks. With SQLBucket, you can apply TDD principles when writing data
-pipelines.
+SQLBucket is a lightweight framework to help write, orchestrate and validate 
+SQL data pipelines. It gives the possibility to set variables and introduces
+some control flow using the fantastic Jinja2 library, and make your queries 
+more dynamic when writing them. It also implements a very simplistic unit and
+integration test framework where you can validate the results of your ETL in 
+the form of SQL checks. With SQLBucket, you can apply TDD principles when writing
+data pipelines.
 
-Lightweight, it can work as a stand alone service, or be part of your workflow
+It can work as a stand alone service, or be part of your workflow
 manager environment (Airflow, Luigi, ..).
 
 
