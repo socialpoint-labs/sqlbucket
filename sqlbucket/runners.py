@@ -12,7 +12,8 @@ class ProjectRunner:
         configuration: dict,
         from_step: int = 1,
         to_step: int = None,
-        verbose: bool = False
+        verbose: bool = False,
+        isolation_level: str = None
     ):
         self.configuration = configuration
         self.from_step_index = from_step - 1
@@ -22,6 +23,7 @@ class ProjectRunner:
         if self.from_step_index > self.to_step_index:
             raise Exception('Start step must be lower or equal the final step')
 
+        self.isolation_level = isolation_level
         self.verbose = verbose
 
     def render_queries(self) -> None:
@@ -38,7 +40,10 @@ class ProjectRunner:
         self.starting_logs()
 
         start = datetime.now()
-        connection = create_connection(self.configuration)
+        connection = create_connection(
+            self.configuration, isolation_level=self.isolation_level
+        )
+
         for i, query in enumerate(self.configuration["order"]):
 
             # we skip the queries out of index
@@ -84,23 +89,25 @@ class ProjectRunner:
         logger.info(f"Project completed in {end - start}")
 
 
-def create_connection(configuration: dict) -> Connection:
-    # todo: isolation parameter consider possibility to set different isolation
-    #  level.
+def create_connection(
+        configuration: dict, isolation_level: str = None) -> Connection:
     # todo: a user may prefer to run a session that commits data only at the
     #  very end of the ETL instead of an auto commit execution at engine level.
 
-    isolation_level = "AUTOCOMMIT"
-
-    # SQLITE does not have autocommit, so we set to a more
-    if configuration['connection_url'][:6] == 'sqlite':
-        isolation_level = 'SERIALIZABLE'
-
-    engine = create_engine(
-        configuration['connection_url'],
-        poolclass=NullPool,
-        isolation_level=isolation_level
-    )
+    # if no isolation level is indicated, we just create an engine without the
+    # isolation level parameter. This means it will use the default one.
+    # Check your backend DB documentation to know which one is the default as
+    # it varies between databases.
+    if not isolation_level:
+        engine = create_engine(
+            configuration['connection_url'], poolclass=NullPool
+        )
+    else:
+        engine = create_engine(
+            configuration['connection_url'],
+            poolclass=NullPool,
+            isolation_level=isolation_level
+        )
     connection = engine.connect()
     if configuration.get('connection_query') is not None:
         logger.info(f'Running connection query: '
