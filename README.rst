@@ -113,7 +113,7 @@ the integrity of your ETL. We also have a set of `common macros`_ that can be
 helpful to start with.
 
 .. _documentation on integrity: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/integrity.rst
-.. _common macros: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/integrity.rst
+.. _common macros: https://github.com/socialpoint-labs/sqlbucket/blob/master/documentation/integrity_macros.rst
 
 
 See below a full example that will actually first run your ETL, and then run
