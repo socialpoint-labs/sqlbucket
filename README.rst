@@ -75,10 +75,10 @@ Your `projects` should now look like the structure below:
                 |-- integrity_one.sql
 
 
-An SQLBucket project is made of 3 components:
- * Configuration
- * ETL queries
- * Integrity queries
+SQLBucket project structure
+---------------------------
+An SQLBucket project is made of 3 core components: the configuration, the ETL
+queries and the integrity check queries.
 
 **Configuration**
 
