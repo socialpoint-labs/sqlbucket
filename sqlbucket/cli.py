@@ -55,10 +55,8 @@ def load_cli(sqlbucket_object):
         logger.info('Variables used')
         logger.info(submitted_variables)
 
-        if isolation:
-            isolation = isolation.upper()
-
         # included dbs
+        dbs = list()
         if db:
             dbs = db.split(',')
         elif all:
@@ -72,6 +70,10 @@ def load_cli(sqlbucket_object):
             dbs = [item for item in dbs if item not in ex_dbs]
 
         for dbi in dbs:
+            connection_variables = sqlbucket.connection_variables[dbi]
+            if 'isolation_level' in connection_variables and isolation is None:
+                isolation = connection_variables['isolation_level']
+
             etl = sqlbucket.load_project(
                 project_name=name,
                 connection_name=dbi,
@@ -80,6 +82,9 @@ def load_cli(sqlbucket_object):
             if rendering:
                 etl.render(from_step=fstep, to_step=tstep, group=group)
             else:
+                if isolation:
+                    isolation = isolation.upper()
+
                 etl.run(
                     from_step=fstep,
                     to_step=tstep,
