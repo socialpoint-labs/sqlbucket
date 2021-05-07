@@ -1,4 +1,4 @@
-from sqlbucket.runners import create_connection
+from sqlbucket.runners import create_connection, connection_query
 from sqlbucket.runners import logger
 from tabulate import tabulate
 from sqlbucket.utils import integrity_logo, success
@@ -42,6 +42,7 @@ def run_integrity(configuration: dict, prefix: str = '', verbose: bool = False):
             errors += 1
             logger.info(f'Query {query_name} encountered an error:')
             logger.error(e)
+            connection_query(configuration, connection)
             continue
 
     # logging summary
