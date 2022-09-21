@@ -89,6 +89,30 @@ class Project:
             "connection_query": self.get_connection_query()
         }
 
+    def send_msg(run_func):
+
+        def wrapper(self, *args, **kwargs):
+
+            silent = kwargs.pop("silent", False)
+
+            if silent:
+                run_func(self, *args, **kwargs)
+            else:
+                group = kwargs.get("group")
+                config = self.configure(group)
+
+                if 'context' in config and 'f' in config['context']:
+                    funcs_reg = config['context']['f']
+                    start_msg = funcs_reg.get('start_msg')
+                    end_msg = funcs_reg.get('end_msg')
+
+                    if start_msg: start_msg(**config)
+                    run_func(self, *args, **kwargs)
+                    if end_msg: end_msg(**config)
+
+        return wrapper
+
+    @send_msg
     def run(self, group: str = None, from_step: int = 1, to_step: int = None,
             verbose: bool = False, isolation_level: str = None) -> None:
         configuration = self.configure(group)
