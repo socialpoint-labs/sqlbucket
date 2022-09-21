@@ -35,11 +35,13 @@ def load_cli(sqlbucket_object):
     @click.option('--rendering', '-r', is_flag=True, help="Only render queries")
     @click.option('--all', '-all', is_flag=True, help="All dbs")
     @click.option('--edb', '-x', required=False, type=str, help="Excluded dbs")
+    @click.option('--silent', '-s', required=False, is_flag=True, default=False,
+                  help="Do not notify execution status.")
     @click.pass_obj
     @click.argument('args', nargs=-1)
     def run_job(sqlbucket, name, db, fstep, tstep, to_date, from_date,
                 from_days, to_days, group, isolation, verbose, rendering,
-                all, edb, args):
+                all, edb, silent, args):
 
         submitted_variables = cli_variables_parser(args)
 
@@ -90,7 +92,8 @@ def load_cli(sqlbucket_object):
                     to_step=tstep,
                     group=group,
                     verbose=verbose,
-                    isolation_level=isolation
+                    isolation_level=isolation,
+                    silent=silent
                 )
 
     @cli.command(context_settings=dict(ignore_unknown_options=True))
