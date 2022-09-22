@@ -106,9 +106,14 @@ class Project:
                     start_msg = funcs_reg.get('start_msg')
                     end_msg = funcs_reg.get('end_msg')
 
-                    if start_msg: start_msg(**config)
-                    run_func(self, *args, **kwargs)
-                    if end_msg: end_msg(**config)
+                    try:
+                        if start_msg: start_msg(**config)
+                        run_func(self, *args, **kwargs)
+                        if end_msg: end_msg(**config)
+                    except:
+                        exception_msg = funcs_reg.get('exception_msg')
+                        if exception_msg: exception_msg(**config)
+                        raise
 
         return wrapper
 
