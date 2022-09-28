@@ -13,12 +13,12 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 deploy-loc:
-	python setup.py build
-	python setup.py install
+	python3 -m pip install --upgrade build
+	python3 -m build
 
 release:
-	python setup.py sdist bdist_wheel
-	twine upload dist/*
+	python3 -m pip install --upgrade twine
+	python3 -m twine upload dist/*
 
 empty-dist:
 	rm dist/*
