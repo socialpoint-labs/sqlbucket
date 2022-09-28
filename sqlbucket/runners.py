@@ -109,9 +109,13 @@ def create_connection(
             isolation_level=isolation_level
         )
     connection = engine.connect()
+    connection_query(configuration, connection)
+
+    return connection
+
+
+def connection_query(configuration: dict, connection: Connection):
     if configuration.get('connection_query') is not None:
         logger.info(f'Running connection query: '
                     f'{configuration["connection_query"]}')
         connection.execute(text(configuration['connection_query']))
-
-    return connection
