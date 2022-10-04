@@ -1,12 +1,12 @@
 [project]
 name = "sqlbucket"
-version = "0.4.2"
+version = "0.4.3"
 authors = [
   { name="Philippe Oger", email="phil.oger@gmail.com" },
 ]
 description = "SQLBucket - Write your SQL ETL flow and ETL integrity tool."
 license = {file = "LICENSE"}
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.7"
 keywords = ['sql', 'etl', 'data-integrity']
 classifiers=[
