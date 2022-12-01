@@ -5,11 +5,11 @@ SQLBucket
     :target: https://travis-ci.org/socialpoint-labs/sqlbucket
 
 
-SQLBucket is a lightweight framework to help write, orchestrate and validate 
+SQLBucket is a lightweight framework to help write, orchestrate and validate
 SQL data pipelines. It gives the possibility to set variables and introduces
-some control flow using the fantastic Jinja2 library. It also implements a 
+some control flow using the fantastic Jinja2 library. It also implements a
 very simplistic unit and integration test framework where you can validate the
-results of your ETL in the form of SQL checks. With SQLBucket, you can apply 
+results of your ETL in the form of SQL checks. With SQLBucket, you can apply
 TDD principles when writing data pipelines.
 
 It can work as a stand alone service, or be part of your workflow
@@ -25,8 +25,7 @@ Install and update using `pip`_:
 
     pip install -U sqlbucket
 
-SQLBucket works only for Python 3.6 and 3.7, and probably 3.8 although
-not tested yet.
+SQLBucket now works for python 3.10.
 
 
 A Simple Example
@@ -172,4 +171,3 @@ Links
 
 
 .. _pip: https://pip.pypa.io/en/stable/quickstart/
-
